@@ -30,10 +30,38 @@ class ContentProcessor
     {
         $content = $parameters['pObj']->content;
 
-        $content = str_replace('Top of Europe', 'Very High Top of Europe', $content);
+        $markers = $this->getMarkers($parameters['pObj']);
 
         // Replace content
+        $content = str_replace(array_keys($markers), array_values($markers), $content);
+
         $parameters['pObj']->content = $content;
+    }
+
+    /**
+     * Returns the markers available in the current root line.
+     *
+     * @param TypoScriptFrontendController $frontendController
+     * @return array
+     */
+    protected function getMarkers(TypoScriptFrontendController $frontendController)
+    {
+        $table = 'tx_variables_marker';
+        $parentPages = array_map(function ($page) {
+            return $page['uid'];
+        }, $frontendController->rootLine);
+        $rows = $frontendController->cObj->getRecords($table, [
+            'selectFields' => 'marker, replacement',
+            'pidInList' => implode(',', $parentPages),
+        ]);
+
+        $markers = [];
+        foreach ($rows as $row) {
+            $marker = '{{' . $row['marker'] . '}}';
+            $markers[$marker] = $row['replacement'];
+        }
+
+        return $markers;
     }
 
 }

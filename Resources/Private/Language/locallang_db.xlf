@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-09-22T14:50:28Z" product-name="variables">
+		<header/>
+		<body>
+			<trans-unit id="tx_variables_marker">
+				<source>Replacement Marker</source>
+			</trans-unit>
+			<trans-unit id="tx_variables_marker.marker">
+				<source>Marker:</source>
+			</trans-unit>
+			<trans-unit id="tx_variables_marker.replacement">
+				<source>Replacement Text:</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
