@@ -16,6 +16,15 @@ namespace Sinso\Variables\Hooks;
 
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
+/**
+ * Hooks for \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController.
+ *
+ * @category    Hooks
+ * @package     tx_variables
+ * @author      Xavier Perseguers <xavier@causal.ch>
+ * @copyright   2016 Causal Sàrl
+ * @license     http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
+ */
 class ContentProcessor
 {
 
@@ -31,9 +40,25 @@ class ContentProcessor
         $content = $parameters['pObj']->content;
 
         $markers = $this->getMarkers($parameters['pObj']);
+        $markerKeys = array_keys($markers);
+        $markerRegexp = '/(' . implode('|', $markerKeys) . ')/';
 
-        // Replace content
-        $content = str_replace(array_keys($markers), array_values($markers), $content);
+        $cacheTags = [];
+        $loops = 0;
+        while (preg_match($markerRegexp, $content) && $loops++ < 100) {
+            foreach ($markerKeys as $markerKey) {
+                $newContent = str_replace($markerKey, $markers[$markerKey]['replacement'], $content);
+                if ($newContent !== $content) {
+                    // Assign a cache key associated with the marker
+                    $cacheTags[] = 'tx_variables_uid_' . $markers[$markerKey]['uid'];
+                    $content = $newContent;
+                }
+            }
+        }
+
+        if (count($cacheTags) > 0) {
+            $parameters['pObj']->addCacheTags($cacheTags);
+        }
 
         $parameters['pObj']->content = $content;
     }
@@ -58,8 +83,15 @@ class ContentProcessor
         $markers = [];
         foreach ($rows as $row) {
             $marker = '{{' . $row['marker'] . '}}';
-            $markers[$marker] = $row['replacement'];
+            $markers[$marker] = [
+                'uid' => $row['uid'],
+                'marker' => $marker,
+                'replacement' => $row['replacement'],
+            ];
         }
+
+        // Sort markers
+        ksort($markers);
 
         return $markers;
     }

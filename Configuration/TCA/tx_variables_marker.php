@@ -124,7 +124,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 40,
-                'eval' => 'required,trim,upper,uniqueInPid'
+                'eval' => 'required,alphanum_x,upper,uniqueInPid'
             ],
         ],
         'replacement' => [
