@@ -1,0 +1,6 @@
+plugin.tx_variables {
+    persistence {
+        # cat=variables/persistence; type=integer; label=Storage PID of records
+        storagePid =
+    }
+}

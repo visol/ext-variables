@@ -1,0 +1,5 @@
+plugin.tx_variables {
+    persistence {
+        storagePid = {$plugin.tx_variables.persistence.storagePid}
+    }
+}

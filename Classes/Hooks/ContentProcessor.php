@@ -75,6 +75,11 @@ class ContentProcessor
         $parentPages = array_map(function ($page) {
             return $page['uid'];
         }, $frontendController->rootLine);
+
+        if (!empty($frontendController->tmpl->setup['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
+            $parentPages[] = (int)$frontendController->tmpl->setup['plugin.']['tx_variables.']['persistence.']['storagePid'];
+        }
+
         $rows = $frontendController->cObj->getRecords($table, [
             'selectFields' => 'marker, replacement',
             'pidInList' => implode(',', $parentPages),
