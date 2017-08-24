@@ -1,4 +1,13 @@
 <?php
+
+$settings = isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['variables'])
+    ? unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['variables'])
+    : [];
+
+$enableRte = is_array($settings) && isset($settings['enableRte'])
+    ? (bool)$settings['enableRte']
+    : false;
+
 return [
     'ctrl' => [
         'title' => 'LLL:EXT:variables/Resources/Private/Language/locallang_db.xlf:tx_variables_marker',
@@ -136,6 +145,7 @@ return [
                 'rows' => 4,
                 'eval' => 'required,trim'
             ],
+            'defaultExtras' => $enableRte ? 'richtext:rte_transform[mode=ts_css]' : '',
         ],
     ]
 ];
