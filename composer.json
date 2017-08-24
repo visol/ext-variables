@@ -2,7 +2,7 @@
   "name": "sinso/variables",
   "description": "Search and replace strings recursively after page generation using user-managed replacement definitions.",
   "type": "typo3-cms-extension",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "",
   "license": "GPL-2.0+",
   "preferred-install": "dist",
