@@ -4,12 +4,12 @@
  * Extension Manager/Repository config file for ext "translation_api".
  ***********************************************************************/
 
-$EM_CONF[$_EXTKEY] = array(
+$EM_CONF[$_EXTKEY] = [
     'title' => 'Content Variables',
     'description' => 'Search and replace strings recursively after page generation using user-managed replacement definitions.',
     'category' => 'misc',
     'shy' => 0,
-    'version' => '0.2.0',
+    'version' => '0.3.0-dev',
     'dependencies' => '',
     'conflicts' => '',
     'priority' => '',
@@ -26,17 +26,17 @@ $EM_CONF[$_EXTKEY] = array(
     'author_company' => 'Swisscom (Schweiz) AG',
     'CGLcompliance' => '',
     'CGLcompliance_note' => '',
-    'constraints' => array(
-        'depends' => array(
-            'typo3' => '7.6.0-7.6.99',
-            'php' => '7.0.0-7.0.99',
-        ),
-        'conflicts' => array(
-        ),
-        'suggests' => array(
-        ),
-    ),
+    'constraints' => [
+        'depends' => [
+            'typo3' => '7.6.0-8.7.99',
+            'php' => '7.0.0-7.2.99',
+        ],
+        'conflicts' => [
+        ],
+        'suggests' => [
+        ],
+    ],
     '_md5_values_when_last_written' => '',
-    'suggests' => array(
-    ),
-);
+    'suggests' => [
+    ],
+];
