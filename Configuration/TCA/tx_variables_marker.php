@@ -134,7 +134,7 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 40,
-                'eval' => 'required,alphanum_x,upper,uniqueInPid'
+                'eval' => 'required,alphanum_x,upper' //TODO: Restore uniqueInPid. See https://forge.typo3.org/issues/83572
             ],
         ],
         'replacement' => [
