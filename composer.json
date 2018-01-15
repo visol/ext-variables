@@ -4,7 +4,6 @@
   "type": "typo3-cms-extension",
   "homepage": "",
   "license": "GPL-2.0+",
-  "preferred-install": "dist",
   "support": {
     "irc": "",
     "issues": ""
@@ -13,6 +12,10 @@
     "psr-4": {
       "Sinso\\Variables\\": "Classes/"
     }
+  },
+  "require": {
+    "typo3/cms-core": ">=8.7.0,<8.7.999",
+    "php": ">=7.0.0"
   },
   "suggest": {
   },

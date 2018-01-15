@@ -9,7 +9,7 @@ $EM_CONF[$_EXTKEY] = [
     'description' => 'Search and replace strings recursively after page generation using user-managed replacement definitions.',
     'category' => 'misc',
     'shy' => 0,
-    'version' => '0.4.0',
+    'version' => '0.4.1',
     'dependencies' => '',
     'conflicts' => '',
     'priority' => '',
@@ -28,7 +28,7 @@ $EM_CONF[$_EXTKEY] = [
     'CGLcompliance_note' => '',
     'constraints' => [
         'depends' => [
-            'typo3' => '7.6.0-8.7.99',
+            'typo3' => '8.7.0-8.7.99',
             'php' => '7.0.0-7.2.99',
         ],
         'conflicts' => [
