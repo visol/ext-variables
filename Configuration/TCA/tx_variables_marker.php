@@ -100,7 +100,7 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
-                'type' => 'input',
+                'type' => 'inputDateTime',
                 'size' => 13,
                 'max' => 20,
                 'eval' => 'datetime',
@@ -116,7 +116,7 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
-                'type' => 'input',
+                'type' => 'inputDateTime',
                 'size' => 13,
                 'max' => 20,
                 'eval' => 'datetime',
