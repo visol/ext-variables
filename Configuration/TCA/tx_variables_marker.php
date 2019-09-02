@@ -1,12 +1,6 @@
 <?php
 
-$settings = isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['variables'])
-    ? unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['variables'])
-    : [];
-
-$enableRte = is_array($settings) && isset($settings['enableRte'])
-    ? (bool)$settings['enableRte']
-    : false;
+$enableRte = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)->get('variables', 'enableRte');
 
 return [
     'ctrl' => [
@@ -16,14 +10,14 @@ return [
         'crdate' => 'crdate',
         'cruser_id' => 'cruser_id',
         'dividers2tabs' => true,
-        'versioningWS' => 1,
+        'versioningWS' => true,
         'origUid' => 't3_origuid',
         'languageField' => 'sys_language_uid',
         'transOrigPointerField' => 'l10n_parent',
         'transOrigDiffSourceField' => 'l10n_diffsource',
         'default_sortby' => 'marker',
         'delete' => 'deleted',
-        'enablecolumns' => [
+        'enablecolums' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime',
@@ -36,15 +30,10 @@ return [
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1,
-                    marker, replacement,
-                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
-                    starttime, endtime',
-        ],
-    ],
-    'palettes' => [
-        '1' => [
-            'showitem' => ''
+            'showitem' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,
+                    marker,replacement,
+                --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
+                    starttime,endtime',
         ],
     ],
     'columns' => [
@@ -67,6 +56,7 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
+                'renderType' => 'selectSingle',
                 'items' => [
                     ['', 0],
                 ],
@@ -100,11 +90,14 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.starttime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
-                'max' => 20,
-                'eval' => 'datetime,int',
+                'eval' => 'datetime',
                 'checkbox' => 0,
                 'default' => 0,
+                'range' => [
+                    'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
+                ],
             ],
         ],
         'endtime' => [
@@ -113,11 +106,14 @@ return [
             'label' => 'LLL:EXT:lang/locallang_general.xlf:LGL.endtime',
             'config' => [
                 'type' => 'input',
+                'renderType' => 'inputDateTime',
                 'size' => 13,
-                'max' => 20,
-                'eval' => 'datetime,int',
+                'eval' => 'datetime',
                 'checkbox' => 0,
                 'default' => 0,
+                'range' => [
+                    'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
+                ],
             ],
         ],
         'marker' => [
