@@ -1,0 +1,6 @@
+# ide
+.project
+.buildpath
+.settings
+.nbproject
+.idea
