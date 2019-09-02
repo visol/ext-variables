@@ -98,7 +98,7 @@ class ContentProcessor
 
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'] as $classRef) {
-                $hookObj = GeneralUtility::getUserObj($classRef);
+                $hookObj = GeneralUtility::makeInstance($classRef);
                 if (!($hookObj instanceof \Sinso\Variables\Hooks\MarkersProcessorInterface)) {
                     throw new \RuntimeException($classRef . ' does not implement ' . \Sinso\Variables\Hooks\MarkersProcessorInterface::class, 1512391205);
                 }
