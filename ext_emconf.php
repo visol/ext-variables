@@ -1,7 +1,7 @@
 <?php
 
 /***********************************************************************
- * Extension Manager/Repository config file for ext "translation_api".
+ * Extension Manager/Repository config file for ext "variables".
  ***********************************************************************/
 
 $EM_CONF[$_EXTKEY] = [
