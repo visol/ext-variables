@@ -1,5 +1,5 @@
 {
-  "name": "sinso/variables",
+  "name": "visol/variables",
   "description": "Search and replace strings recursively after page generation using user-managed replacement definitions.",
   "type": "typo3-cms-extension",
   "license": "GPL-2.0+",
