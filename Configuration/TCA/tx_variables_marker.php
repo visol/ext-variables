@@ -17,7 +17,7 @@ return [
         'transOrigDiffSourceField' => 'l10n_diffsource',
         'default_sortby' => 'marker',
         'delete' => 'deleted',
-        'enablecolums' => [
+        'enablecolumns' => [
             'disabled' => 'hidden',
             'starttime' => 'starttime',
             'endtime' => 'endtime',
@@ -30,10 +30,11 @@ return [
     ],
     'types' => [
         '1' => [
-            'showitem' => 'sys_language_uid,l10n_parent,l10n_diffsource,hidden,
-                    marker,replacement,
-                --div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,
-                    starttime,endtime',
+            'showitem' =>
+                'sys_language_uid,l10n_parent,l10n_diffsource,hidden,
+                marker,replacement,
+                --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.access,
+                starttime,endtime',
         ],
     ],
     'columns' => [
