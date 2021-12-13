@@ -103,12 +103,9 @@ return [
                 'type' => 'input',
                 'size' => 13,
                 'max' => 20,
-                'eval' => 'datetime',
+                'eval' => 'datetime,int',
                 'checkbox' => 0,
                 'default' => 0,
-                'range' => [
-                    'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
-                ],
             ],
         ],
         'endtime' => [
@@ -119,12 +116,9 @@ return [
                 'type' => 'input',
                 'size' => 13,
                 'max' => 20,
-                'eval' => 'datetime',
+                'eval' => 'datetime,int',
                 'checkbox' => 0,
                 'default' => 0,
-                'range' => [
-                    'lower' => mktime(0, 0, 0, date('m'), date('d'), date('Y'))
-                ],
             ],
         ],
         'marker' => [
