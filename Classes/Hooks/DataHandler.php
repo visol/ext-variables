@@ -39,8 +39,8 @@ class DataHandler
     {
         if (isset($params['table']) && $params['table'] === 'tx_variables_marker') {
             $cacheTagsToFlush = [];
-            if (isset($params['uid'])) {
-                $cacheTagsToFlush[] = 'tx_variables_uid_' . $params['uid'];
+            if (isset($params['marker'])) {
+                $cacheTagsToFlush[] = 'tx_variables_key_hash_' . md5(trim($params['marker']));
             }
             //if (isset($params['uid_page'])) {
             //    $cacheTagsToFlush[] = 'tx_variables_pid_' . $params['uid_page'];
