@@ -15,6 +15,7 @@
 namespace Sinso\Variables\Hooks;
 
 use Doctrine\DBAL\Connection;
+use Sinso\Variables\Utility\CacheKeyUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -54,7 +55,7 @@ class ContentProcessor
                 $newContent = str_replace($markerKey, $markers[$markerKey]['replacement'], $content);
                 if ($newContent !== $content) {
                     // Assign a cache key associated with the marker
-                    $cacheTags[] = 'tx_variables_key_hash_' . md5(trim($markerKey));
+                    $cacheTags[] = CacheKeyUtility::getCacheKey($markerKey);
                     $usedMarkerKeys[] = $markers[$markerKey]['markerKey'];
                     $content = $newContent;
                 }
@@ -63,9 +64,11 @@ class ContentProcessor
 
         $usedMarkerKeys = array_unique($usedMarkerKeys);
 
-        $calculateLifetime = $this->getSmallestLifetimeForMarkers($usedMarkerKeys);
-        $cacheLifetime = $parentObject->page['cache_timeout'] ?: $calculateLifetime;
-        $minLifetime = min($calculateLifetime, $cacheLifetime);
+        $minLifetime = min(
+            $this->getSmallestLifetimeForMarkers($usedMarkerKeys),
+            $parentObject->page['cache_timeout'] ?: PHP_INT_MAX
+        );
+
         $parentObject->page['cache_timeout'] = $minLifetime;
 
         if (count($cacheTags) > 0) {
@@ -82,7 +85,7 @@ class ContentProcessor
         $queryBuilder->getRestrictions()->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
-        // Code taken from:
+        // Code heavily inspired by:
         // \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->getFirstTimeValueForRecord
         $result = PHP_INT_MAX;
         $now = (int)$GLOBALS['ACCESS_TIME'];
