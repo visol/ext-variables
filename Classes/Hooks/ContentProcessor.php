@@ -80,6 +80,10 @@ class ContentProcessor
 
     protected function getSmallestLifetimeForMarkers(array $usedMarkerKeys): int
     {
+        if(empty($usedMarkerKeys)) {
+            return 0;
+        }
+
         $tableName = 'tx_variables_marker';
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName)->createQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll()
