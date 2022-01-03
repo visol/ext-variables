@@ -87,8 +87,9 @@ class ContentProcessor
 
         // Code heavily inspired by:
         // \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->getFirstTimeValueForRecord
-        $result = PHP_INT_MAX;
         $now = (int)$GLOBALS['ACCESS_TIME'];
+        // Max value possible to keep an int \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->realPageCacheContent ($timeOutTime = $GLOBALS['EXEC_TIME'] + $cacheTimeout;)
+        $result = PHP_INT_MAX - $GLOBALS['EXEC_TIME'];
         $timeFields = [];
         $timeConditions = $queryBuilder->expr()->orX();
         foreach (['starttime', 'endtime'] as $field) {
