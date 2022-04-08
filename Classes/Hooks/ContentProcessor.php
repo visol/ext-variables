@@ -38,9 +38,9 @@ class ContentProcessor
      */
     public function replaceContent(array &$parameters, TypoScriptFrontendController $parentObject)
     {
-        $content = $parameters['pObj']->content;
+        $content = $parentObject->content;
 
-        $markers = $this->getMarkers($parameters['pObj']);
+        $markers = $this->getMarkers($parentObject);
         $markerKeys = array_keys($markers);
         $markerRegexp = '/(' . implode('|', $markerKeys) . ')/';
 
@@ -58,10 +58,10 @@ class ContentProcessor
         }
 
         if (count($cacheTags) > 0) {
-            $parameters['pObj']->addCacheTags($cacheTags);
+            $parentObject->addCacheTags($cacheTags);
         }
 
-        $parameters['pObj']->content = $content;
+        $parentObject->content = $content;
     }
 
     /**
@@ -81,10 +81,13 @@ class ContentProcessor
             $parentPages[] = (int)$frontendController->tmpl->setup['plugin.']['tx_variables.']['persistence.']['storagePid'];
         }
 
-        $rows = $frontendController->cObj->getRecords($table, [
-            'selectFields' => 'marker, replacement',
-            'pidInList' => implode(',', $parentPages),
-        ]);
+        $rows = $frontendController->cObj->getRecords(
+            $table,
+            [
+                'selectFields' => 'marker, replacement',
+                'pidInList' => implode(',', $parentPages),
+            ]
+        );
 
         $markers = [];
         foreach ($rows as $row) {

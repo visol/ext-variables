@@ -9,11 +9,12 @@
     }
   },
   "require": {
-    "typo3/cms-core": "^9.5",
+    "typo3/cms-core": "^9.5 || ^10.4 || ^11.5",
     "php": ">=7.0.0"
   },
-  "suggest": {
-  },
-  "require-dev": {
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "variables"
+    }
   }
 }
