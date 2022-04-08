@@ -10,22 +10,10 @@ $EM_CONF[$_EXTKEY] = [
     'category' => 'misc',
     'shy' => 0,
     'version' => '2.0.0',
-    'dependencies' => '',
-    'conflicts' => '',
-    'priority' => '',
-    'loadOrder' => '',
-    'module' => '',
     'state' => 'beta',
-    'uploadfolder' => 0,
-    'createDirs' => '',
-    'modify_tables' => '',
-    'clearcacheonload' => 0,
-    'lockType' => '',
     'author' => 'Xavier Perseguers',
     'author_email' => 'xavier@causal.ch',
     'author_company' => 'Swisscom (Schweiz) AG',
-    'CGLcompliance' => '',
-    'CGLcompliance_note' => '',
     'constraints' => [
         'depends' => [
             'typo3' => '9.5.0-9.5.99',
@@ -35,8 +23,5 @@ $EM_CONF[$_EXTKEY] = [
         ],
         'suggests' => [
         ],
-    ],
-    '_md5_values_when_last_written' => '',
-    'suggests' => [
-    ],
+    ]
 ];
