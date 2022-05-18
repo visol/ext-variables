@@ -2,7 +2,7 @@
   "name": "visol/variables",
   "description": "Search and replace strings recursively after page generation using user-managed replacement definitions.",
   "type": "typo3-cms-extension",
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "autoload": {
     "psr-4": {
       "Sinso\\Variables\\": "Classes/"
@@ -14,7 +14,14 @@
   },
   "extra": {
     "typo3/cms": {
-      "extension-key": "variables"
+      "extension-key": "variables",
+      "web-dir": ".Build/web"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "typo3/cms-composer-installers": true,
+      "typo3/class-alias-loader": true
     }
   }
 }
