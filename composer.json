@@ -23,5 +23,8 @@
       "typo3/cms-composer-installers": true,
       "typo3/class-alias-loader": true
     }
+  },
+  "require-dev": {
+    "rector/rector": "^0.12.23"
   }
 }
