@@ -28,28 +28,18 @@ use TYPO3\CMS\Core\Cache\CacheManager;
  */
 class DataHandler
 {
-
     /**
      * Flushes the cache if a marker record was edited.
-     *
-     * @param array $params
-     * @return void
      */
-    public function clearCachePostProc(array $params)
+    public function clearCachePostProc(array $params): void
     {
-        if (isset($params['table']) && $params['table'] === 'tx_variables_marker') {
-            $cacheTagsToFlush = [];
-            if (isset($params['uid'])) {
-                $cacheTagsToFlush[] = 'tx_variables_uid_' . $params['uid'];
-            }
-            //if (isset($params['uid_page'])) {
-            //    $cacheTagsToFlush[] = 'tx_variables_pid_' . $params['uid_page'];
-            //}
-
+        if (
+            isset($params['table'])
+            && isset($params['uid'])
+            && $params['table'] === 'tx_variables_marker'
+        ) {
             $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
-            foreach ($cacheTagsToFlush as $cacheTag) {
-                $cacheManager->flushCachesInGroupByTag('pages', $cacheTag);
-            }
+            $cacheManager->flushCachesInGroupByTag('pages', ['tx_variables_uid_' . $params['uid']]);
         }
     }
 

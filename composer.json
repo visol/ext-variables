@@ -8,6 +8,11 @@
       "Sinso\\Variables\\": "Classes/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Sinso\\Variables\\Tests\\": "Tests/"
+    }
+  },
   "require": {
     "typo3/cms-core": "^10.4 || ^11.5",
     "php": ">=7.0.0"
@@ -21,10 +26,13 @@
   "config": {
     "allow-plugins": {
       "typo3/cms-composer-installers": true,
-      "typo3/class-alias-loader": true
+      "typo3/class-alias-loader": true,
+      "phpstan/extension-installer": true
     }
   },
   "require-dev": {
-    "rector/rector": "^0.12.23"
+    "rector/rector": "^0.12.23",
+    "typo3/testing-framework": "^6.16",
+    "jangregor/phpstan-prophecy": "^1.0"
   }
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dataset>
+    <tx_variables_marker>
+        <uid>1</uid>
+        <pid>1</pid>
+        <marker>MARKER1</marker>
+        <replacement>Replaced marker 1 from pid 1</replacement>
+    </tx_variables_marker>
+    <tx_variables_marker>
+        <uid>2</uid>
+        <pid>2</pid>
+        <marker>MARKER2</marker>
+        <replacement>Replaced marker 2 from pid 2</replacement>
+    </tx_variables_marker>
+    <tx_variables_marker>
+        <uid>3</uid>
+        <pid>4</pid>
+        <marker>MARKER3</marker>
+        <replacement>Replaced marker 3 from storage pid 4</replacement>
+    </tx_variables_marker>
+</dataset>
