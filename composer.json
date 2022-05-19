@@ -15,7 +15,7 @@
   },
   "require": {
     "typo3/cms-core": "^10.4 || ^11.5",
-    "php": ">=7.0.0"
+    "php": "^7.3 || ~8.0.0 || ~8.1.0"
   },
   "extra": {
     "typo3/cms": {
@@ -29,6 +29,12 @@
       "typo3/class-alias-loader": true,
       "phpstan/extension-installer": true
     }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/web/typo3conf/ext/",
+      "[ -L .Build/web/typo3conf/ext/variables ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/variables"
+    ]
   },
   "require-dev": {
     "rector/rector": "^0.12.23",
