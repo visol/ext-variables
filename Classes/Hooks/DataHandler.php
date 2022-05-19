@@ -14,8 +14,8 @@
 
 namespace Sinso\Variables\Hooks;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Hooks for \TYPO3\CMS\Core\DataHandling\DataHandler.

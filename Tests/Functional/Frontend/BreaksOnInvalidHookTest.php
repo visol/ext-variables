@@ -34,7 +34,7 @@ class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTest
         'EXTCONF' => [
             'variables' => [
                 'postProcessMarkers' => [
-                   NotImplementingInterface::class,
+                    NotImplementingInterface::class,
                 ],
             ],
         ],

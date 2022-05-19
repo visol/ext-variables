@@ -1,7 +1,7 @@
 <?php
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 $enableRte = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('variables', 'enableRte');
 
 return [

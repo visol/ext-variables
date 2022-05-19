@@ -34,7 +34,7 @@ class ProcessesMarkersHookTest extends AbstractProcessesMarkersTest
         'EXTCONF' => [
             'variables' => [
                 'postProcessMarkers' => [
-                   ImplementingInterface::class,
+                    ImplementingInterface::class,
                 ],
             ],
         ],

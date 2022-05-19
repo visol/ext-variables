@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Frontend;
 
-use Sinso\Variables\Frontend\ProcessesMarkers;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
