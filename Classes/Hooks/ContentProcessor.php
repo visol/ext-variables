@@ -1,15 +1,9 @@
 <?php
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the Sinso/Variables project under GPLv2 or later.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with TYPO3 source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE.md file that was distributed with this source code.
  */
 
 namespace Sinso\Variables\Hooks;
@@ -21,25 +15,12 @@ use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-/**
- * Hooks for \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController.
- *
- * @category    Hooks
- * @package     tx_variables
- * @author      Xavier Perseguers <xavier@causal.ch>
- * @copyright   2016 Causal Sàrl
- * @license     http://www.gnu.org/licenses/lgpl.html GNU Lesser General Public License, version 3 or later
- */
 class ContentProcessor
 {
     /**
      * Dynamically replaces variables by user content.
-     *
-     * @param array $parameters
-     * @param TypoScriptFrontendController $parentObject
-     * @return void
      */
-    public function replaceContent(array &$parameters, TypoScriptFrontendController $parentObject)
+    public function replaceContent(array &$parameters, TypoScriptFrontendController $parentObject): void
     {
         $content = $parameters['pObj']->content;
 
@@ -146,11 +127,8 @@ class ContentProcessor
 
     /**
      * Returns the markers available in the current root line.
-     *
-     * @param TypoScriptFrontendController $frontendController
-     * @return array
      */
-    protected function getMarkers(TypoScriptFrontendController $frontendController)
+    protected function getMarkers(TypoScriptFrontendController $frontendController): array
     {
         $table = 'tx_variables_marker';
         $parentPages = array_map(function ($page) {
