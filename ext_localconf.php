@@ -1,7 +1,7 @@
 <?php
 defined('TYPO3') || die();
 
-(function ($extKey) {
+(static function ($extKey) {
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][$extKey]
         = \Sinso\Variables\Hooks\ContentProcessor::class . '->replaceContent';
 
