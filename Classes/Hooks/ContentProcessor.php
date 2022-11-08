@@ -1,9 +1,15 @@
 <?php
 /*
- * This file is part of the Sinso/Variables project under GPLv2 or later.
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
- * LICENSE.md file that was distributed with this source code.
+ * LICENSE.txt file that was distributed with TYPO3 source code.
+ *
+ * The TYPO3 project - inspiring people to share!
  */
 
 namespace Sinso\Variables\Hooks;
@@ -17,14 +23,15 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class ContentProcessor
 {
+
     /**
      * Dynamically replaces variables by user content.
      */
     public function replaceContent(array &$parameters, TypoScriptFrontendController $parentObject): void
     {
-        $content = $parameters['pObj']->content;
+        $content = $parentObject->content;
 
-        $markers = $this->getMarkers($parameters['pObj']);
+        $markers = $this->getMarkers($parentObject);
         $markerKeys = array_keys($markers);
         $markerRegexp = '/(' . implode('|', $markerKeys) . ')/';
 
@@ -53,10 +60,10 @@ class ContentProcessor
         $parentObject->page['cache_timeout'] = $minLifetime;
 
         if (count($cacheTags) > 0) {
-            $parameters['pObj']->addCacheTags($cacheTags);
+            $parentObject->addCacheTags($cacheTags);
         }
 
-        $parameters['pObj']->content = $content;
+        $parentObject->content = $content;
     }
 
     protected function getSmallestLifetimeForMarkers(array $usedMarkerKeys): int
@@ -139,11 +146,14 @@ class ContentProcessor
             $parentPages[] = (int)$frontendController->tmpl->setup['plugin.']['tx_variables.']['persistence.']['storagePid'];
         }
 
-        $rows = $frontendController->cObj->getRecords($table, [
-            'selectFields' => 'marker, replacement',
-            'pidInList' => implode(',', $parentPages),
-            'orderBy' => 'uid ASC',
-        ]);
+        $rows = $frontendController->cObj->getRecords(
+            $table,
+            [
+                'selectFields' => 'marker, replacement',
+                'pidInList' => implode(',', $parentPages),
+                'orderBy' => 'uid ASC',
+            ]
+        );
 
         $markers = [];
         foreach ($rows as $row) {
@@ -159,8 +169,8 @@ class ContentProcessor
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'] as $classRef) {
                 $hookObj = GeneralUtility::makeInstance($classRef);
-                if (!($hookObj instanceof \Sinso\Variables\Hooks\MarkersProcessorInterface)) {
-                    throw new \RuntimeException($classRef . ' does not implement ' . \Sinso\Variables\Hooks\MarkersProcessorInterface::class, 1512391205);
+                if (!($hookObj instanceof MarkersProcessorInterface)) {
+                    throw new \RuntimeException($classRef . ' does not implement ' . MarkersProcessorInterface::class, 1512391205);
                 }
                 $hookObj->postProcessMarkers($markers);
             }

@@ -1,0 +1,8 @@
+page = PAGE
+page.10 = < styles.content.get
+
+tt_content = FLUIDTEMPLATE
+tt_content.template = TEXT
+tt_content.template.value = <p>{data.bodytext -> f:format.html()}</p>
+
+plugin.tx_variables.persistence.storagePid = 4

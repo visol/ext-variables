@@ -1,6 +1,3 @@
-# ide
-.project
-.buildpath
-.settings
-.nbproject
-.idea
+/composer.lock
+/vendor/
+/.Build/

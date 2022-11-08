@@ -1,26 +1,35 @@
 <?php
 /*
- * This file is part of the Sinso/Variables project under GPLv2 or later.
+ * This file is part of the TYPO3 CMS project.
+ *
+ * It is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License, either version 2
+ * of the License, or any later version.
  *
  * For the full copyright and license information, please read the
- * LICENSE.md file that was distributed with this source code.
+ * LICENSE.txt file that was distributed with TYPO3 source code.
+ *
+ * The TYPO3 project - inspiring people to share!
  */
 
 namespace Sinso\Variables\Hooks;
 
 use Sinso\Variables\Utility\CacheKeyUtility;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class DataHandler
 {
-
     /**
      * Flushes the cache if a marker record was edited.
      */
     public function clearCachePostProc(array $params): void
     {
-        if (isset($params['table']) && $params['table'] === 'tx_variables_marker') {
+        if (
+            isset($params['table'])
+            && isset($params['uid'])
+            && $params['table'] === 'tx_variables_marker'
+        ) {
             $cacheTagsToFlush = [];
             if (isset($params['marker'])) {
                 $cacheTagsToFlush[] = CacheKeyUtility::getCacheKey(params['marker']);

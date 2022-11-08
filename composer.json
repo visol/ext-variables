@@ -2,19 +2,42 @@
   "name": "visol/variables",
   "description": "Search and replace strings recursively after page generation using user-managed replacement definitions.",
   "type": "typo3-cms-extension",
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "autoload": {
     "psr-4": {
       "Sinso\\Variables\\": "Classes/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Sinso\\Variables\\Tests\\": "Tests/"
+    }
+  },
   "require": {
-    "typo3/cms-core": "^9.5 || ^10.4 || ^11.5",
+    "typo3/cms-core": "^10.4 || ^11.5",
     "php": "~7.4.0 || ~8.0.0 || ~8.1.0"
   },
   "extra": {
     "typo3/cms": {
-      "extension-key": "variables"
+      "extension-key": "variables",
+      "web-dir": ".Build/web"
+    },
+  "config": {
+    "allow-plugins": {
+      "typo3/cms-composer-installers": true,
+      "typo3/class-alias-loader": true
     }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/web/typo3conf/ext/",
+      "[ -L .Build/web/typo3conf/ext/variables ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/variables"
+    ]
+  },
+  "require-dev": {
+    "rector/rector": "^0.12.23",
+    "typo3/testing-framework": "^6.16",
+    "phpspec/prophecy-phpunit": "^2.0",
+    "symplify/easy-coding-standard": "^10.2"
   }
 }
