@@ -17,11 +17,18 @@
     "typo3/cms-core": "^10.4 || ^11.5",
     "php": "~7.4.0 || ~8.0.0 || ~8.1.0"
   },
+  "require-dev": {
+    "rector/rector": "^0.12.23",
+    "typo3/testing-framework": "^6.16",
+    "phpspec/prophecy-phpunit": "^2.0",
+    "symplify/easy-coding-standard": "^10.2"
+  },
   "extra": {
     "typo3/cms": {
       "extension-key": "variables",
       "web-dir": ".Build/web"
-    },
+    }
+  },
   "config": {
     "allow-plugins": {
       "typo3/cms-composer-installers": true,
@@ -33,11 +40,5 @@
       "mkdir -p .Build/web/typo3conf/ext/",
       "[ -L .Build/web/typo3conf/ext/variables ] || ln -snvf ../../../../. .Build/web/typo3conf/ext/variables"
     ]
-  },
-  "require-dev": {
-    "rector/rector": "^0.12.23",
-    "typo3/testing-framework": "^6.16",
-    "phpspec/prophecy-phpunit": "^2.0",
-    "symplify/easy-coding-standard": "^10.2"
   }
 }
