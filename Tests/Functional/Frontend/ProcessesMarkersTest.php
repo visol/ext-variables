@@ -56,7 +56,7 @@ class ProcessesMarkersTest extends AbstractProcessesMarkersTest
 
         $pageCache = $this->getAllRecords('cache_pages_tags');
         self::assertCount(2, $pageCache);
-        self::assertSame('tx_variables_uid_1', $pageCache[0]['tag']);
+        self::assertSame('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639', $pageCache[0]['tag']);
     }
 
     /**
@@ -73,8 +73,8 @@ class ProcessesMarkersTest extends AbstractProcessesMarkersTest
 
         $pageCache = $this->getAllRecords('cache_pages_tags');
         self::assertCount(3, $pageCache);
-        self::assertSame('tx_variables_uid_1', $pageCache[0]['tag']);
-        self::assertSame('tx_variables_uid_2', $pageCache[1]['tag']);
+        self::assertSame('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639', $pageCache[0]['tag']);
+        self::assertSame('tx_variables_key_hash_7324efb2ab7ff6e7ef0fe77210ff6b20', $pageCache[1]['tag']);
     }
 
     /**
@@ -91,6 +91,6 @@ class ProcessesMarkersTest extends AbstractProcessesMarkersTest
 
         $pageCache = $this->getAllRecords('cache_pages_tags');
         self::assertCount(2, $pageCache);
-        self::assertSame('tx_variables_uid_3', $pageCache[0]['tag']);
+        self::assertSame('tx_variables_key_hash_2328e4c0fcee8716480763f53e97ea82', $pageCache[0]['tag']);
     }
 }

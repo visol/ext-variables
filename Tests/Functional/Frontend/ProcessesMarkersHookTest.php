@@ -54,6 +54,6 @@ class ProcessesMarkersHookTest extends AbstractProcessesMarkersTest
 
         $pageCache = $this->getAllRecords('cache_pages_tags');
         self::assertCount(2, $pageCache);
-        self::assertSame('tx_variables_uid_1', $pageCache[0]['tag']);
+        self::assertSame('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639', $pageCache[0]['tag']);
     }
 }

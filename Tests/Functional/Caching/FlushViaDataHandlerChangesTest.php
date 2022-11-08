@@ -99,8 +99,9 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
         $subject->clearCachePostProc([
             'table' => 'tx_variables_marker',
             'uid' => '1',
+            'marker' => 'TEST'
         ]);
 
-        $cacheManager->flushCachesInGroupByTag('pages', ['tx_variables_uid_1'])->shouldBeCalledOnce();
+        $cacheManager->flushCachesInGroupByTag('pages', 'tx_variables_key_hash_033bd94b1168d7e4f0d644c3c95e35bf')->shouldBeCalledOnce();
     }
 }

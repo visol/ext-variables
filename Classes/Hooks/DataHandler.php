@@ -32,7 +32,7 @@ class DataHandler
         ) {
             $cacheTagsToFlush = [];
             if (isset($params['marker'])) {
-                $cacheTagsToFlush[] = CacheKeyUtility::getCacheKey(params['marker']);
+                $cacheTagsToFlush[] = CacheKeyUtility::getCacheKey($params['marker']);
             }
 
             $cacheManager = GeneralUtility::makeInstance(CacheManager::class);
