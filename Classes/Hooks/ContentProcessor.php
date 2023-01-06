@@ -16,6 +16,7 @@ namespace Sinso\Variables\Hooks;
 
 use Doctrine\DBAL\Connection;
 use Sinso\Variables\Utility\CacheKeyUtility;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -29,6 +30,8 @@ class ContentProcessor
      */
     public function replaceContent(array &$parameters, TypoScriptFrontendController $parentObject): void
     {
+        $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+
         $content = $parentObject->content;
 
         $markers = $this->getMarkers($parentObject);
@@ -61,6 +64,11 @@ class ContentProcessor
 
         if (count($cacheTags) > 0) {
             $parentObject->addCacheTags($cacheTags);
+        }
+
+        // Remove all markers (avoids empty entries)
+        if ($extConfig->get('variables', 'removeUnreplacedMarkers')) {
+            $content = preg_replace('/{{.*?}}/', '', $content);
         }
 
         $parentObject->content = $content;

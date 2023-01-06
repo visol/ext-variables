@@ -1,2 +1,5 @@
 # cat=basic; type=boolean; label=Enable RTE in replacement field. Experimental!
 enableRte = 0
+
+# cat=basic; type=boolean; label=Remove empty markers if still there
+removeUnreplacedMarkers = 0
