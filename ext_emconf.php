@@ -13,14 +13,4 @@ $EM_CONF[$_EXTKEY] = [
     'author' => 'Xavier Perseguers',
     'author_email' => 'xavier@causal.ch',
     'author_company' => 'Swisscom (Schweiz) AG',
-    'constraints' => [
-        'depends' => [
-            'typo3' => '9.5.0-9.5.99',
-            'php' => '7.0.0-7.2.99',
-        ],
-        'conflicts' => [
-        ],
-        'suggests' => [
-        ],
-    ]
 ];
