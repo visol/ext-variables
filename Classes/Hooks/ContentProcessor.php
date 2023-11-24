@@ -174,8 +174,8 @@ class ContentProcessor
             ];
         }
 
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'])) {
-            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'] as $classRef) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['variables']['postProcessMarkers'])) {
+            foreach ($GLOBALS['TYPO3_CONF_VARS']['EXT']['variables']['postProcessMarkers'] as $classRef) {
                 $hookObj = GeneralUtility::makeInstance($classRef);
                 if (!($hookObj instanceof MarkersProcessorInterface)) {
                     throw new \RuntimeException($classRef . ' does not implement ' . MarkersProcessorInterface::class, 1512391205);
