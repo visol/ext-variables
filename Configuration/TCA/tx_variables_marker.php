@@ -77,6 +77,7 @@ return [
                 'items' => [
                     ['', 0],
                 ],
+                'default' => 0,
                 'foreign_table' => 'tx_variables_marker',
                 'foreign_table_where' => 'AND tx_variables_marker.pid=###CURRENT_PID### AND tx_variables_marker.sys_language_uid IN (-1,0)',
             ],
