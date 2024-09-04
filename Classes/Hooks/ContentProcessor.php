@@ -174,7 +174,7 @@ class ContentProcessor
             ];
         }
 
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'])) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'] as $classRef) {
                 $hookObj = GeneralUtility::makeInstance($classRef);
                 if (!($hookObj instanceof MarkersProcessorInterface)) {
