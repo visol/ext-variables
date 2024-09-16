@@ -20,9 +20,9 @@
   },
   "require-dev": {
     "rector/rector": "^0.12.23",
-    "typo3/testing-framework": "^6.16",
+    "typo3/testing-framework": "^7.1",
     "phpspec/prophecy-phpunit": "^2.0",
-    "symplify/easy-coding-standard": "^10.2"
+    "symplify/easy-coding-standard": "^12.3"
   },
   "extra": {
     "typo3/cms": {
