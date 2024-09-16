@@ -170,7 +170,6 @@ class VariablesService
         return $markers;
     }
 
-
     protected function setCacheTagsAndLifetimeInTsfe(): void
     {
         $this->usedMarkerKeys = array_unique($this->usedMarkerKeys);
@@ -186,7 +185,6 @@ class VariablesService
             $this->typoScriptFrontendController->addCacheTags($this->cacheTags->toArray());
         }
     }
-
 
     public function getSmallestLifetimeForMarkers(array $usedMarkerKeys): int
     {
