@@ -37,10 +37,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
-    public function canBeCreated(): void
+    public function testCanBeCreated(): void
     {
         $subject = new DataHandler();
 
@@ -51,10 +48,9 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
     }
 
     /**
-     * @test
      * @dataProvider possibleNoneTriggeringParams
      */
-    public function doesNotInteractWithCacheManagerOnUnkownData(array $params): void
+    public function testDoesNotInteractWithCacheManagerOnUnkownData(array $params): void
     {
         $cacheManager = $this->prophesize(CacheManager::class);
         GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager->reveal());
@@ -87,10 +83,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     */
-    public function flushCachesByGroupForMarker(): void
+    public function testFlushCachesByGroupForMarker(): void
     {
         $cacheManager = $this->prophesize(CacheManager::class);
         GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager->reveal());
