@@ -258,5 +258,4 @@ class VariablesService
     {
         return $GLOBALS['TSFE'];
     }
-
 }

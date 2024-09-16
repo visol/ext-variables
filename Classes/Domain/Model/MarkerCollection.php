@@ -42,9 +42,6 @@ class MarkerCollection extends AbstractArray
 
     public function getMarkerKeys(): array
     {
-        $markerKeys = array_keys($this->data);
-        return $markerKeys;
+        return array_keys($this->data);
     }
-
-    // ksort($markers);
 }

@@ -26,9 +26,7 @@ class DataHandler
     public function clearCachePostProc(array $params): void
     {
         if (
-            isset($params['table'])
-            && isset($params['uid'])
-            && $params['table'] === 'tx_variables_marker'
+            isset($params['table'], $params['uid']) && $params['table'] === 'tx_variables_marker'
         ) {
             $cacheTagsToFlush = [];
             if (isset($params['marker'])) {
