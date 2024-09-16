@@ -30,7 +30,7 @@ use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInter
  */
 class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTest
 {
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'EXTCONF' => [
             'variables' => [
                 'postProcessMarkers' => [
@@ -40,10 +40,7 @@ class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTest
         ],
     ];
 
-    /**
-     * @test
-     */
-    public function throwsExceptionIfConfiguredClassDoesntImplementInterface(): void
+    public function testThrowsExceptionIfConfiguredClassDoesntImplementInterface(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInterface does not implement Sinso\Variables\Hooks\MarkersProcessorInterface');
