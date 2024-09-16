@@ -12,13 +12,21 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Sinso\Variables\Hooks;
+namespace Sinso\Variables\Domain\Model;
 
-use Sinso\Variables\Domain\Model\MarkerCollection;
-
-interface MarkersProcessorInterface
+class Marker
 {
+    public function __construct(
+        public int $uid,
+        public string $key,
+        public string $replacement,
+        // public ?int $smallestValueFromTimeFields,
+    )
+    {
+    }
 
-    function postProcessMarkers(MarkerCollection &$markers);
-
+    public function getMarkerWithBrackets(): string
+    {
+        return '{{' . $this->key . '}}';
+    }
 }

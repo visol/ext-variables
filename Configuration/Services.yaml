@@ -6,3 +6,6 @@ services:
 
   Sinso\Variables\:
     resource: '../Classes/*'
+
+  Sinso\Variables\Service\VariablesService:
+    public: true
