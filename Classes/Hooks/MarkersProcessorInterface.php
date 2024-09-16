@@ -18,7 +18,5 @@ use Sinso\Variables\Domain\Model\MarkerCollection;
 
 interface MarkersProcessorInterface
 {
-
     public function postProcessMarkers(MarkerCollection $markers);
-
 }

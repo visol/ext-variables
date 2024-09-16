@@ -21,8 +21,7 @@ class Marker
         public string $key,
         public string $replacement,
         // public ?int $smallestValueFromTimeFields,
-    )
-    {
+    ) {
     }
 
     public function getMarkerWithBrackets(): string

@@ -21,7 +21,6 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 class ContentProcessor
 {
-
     protected VariablesService $variablesService;
 
     public function __construct()
@@ -38,5 +37,4 @@ class ContentProcessor
         $this->variablesService->initialize($extensionConfiguration, $parentObject);
         $this->variablesService->replaceMarkersInStructureAndAdjustCaching($parentObject->content);
     }
-
 }

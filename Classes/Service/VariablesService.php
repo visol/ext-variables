@@ -49,7 +49,6 @@ class VariablesService
         $this->markerCollection = $this->getMarkers();
         $this->markerKeys = $this->markerCollection->getMarkerKeys();
         $this->markerRegexp = '/(' . implode('|', $this->markerKeys) . ')/'; // TODO Use preg_quote
-
     }
 
     /**

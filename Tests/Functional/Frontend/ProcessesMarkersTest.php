@@ -28,10 +28,7 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
  */
 class ProcessesMarkersTest extends AbstractProcessesMarkersTest
 {
-    /**
-     * @test
-     */
-    public function noMarkerAppliedAsNoneExist(): void
+    public function testNoMarkerAppliedAsNoneExist(): void
     {
         self::assertStringContainsString(
             '<p>Some example text with marker {{MARKER1}}</p>',
@@ -42,10 +39,7 @@ class ProcessesMarkersTest extends AbstractProcessesMarkersTest
         self::assertCount(1, $pageCache);
     }
 
-    /**
-     * @test
-     */
-    public function appliesMarkersStoredOnSamePage(): void
+    public function testAppliesMarkersStoredOnSamePage(): void
     {
         $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
 
@@ -59,10 +53,7 @@ class ProcessesMarkersTest extends AbstractProcessesMarkersTest
         self::assertSame('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639', $pageCache[0]['tag']);
     }
 
-    /**
-     * @test
-     */
-    public function appliesMarkersFromRootlinePage(): void
+    public function testAppliesMarkersFromRootlinePage(): void
     {
         $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
 
@@ -77,10 +68,7 @@ class ProcessesMarkersTest extends AbstractProcessesMarkersTest
         self::assertSame('tx_variables_key_hash_7324efb2ab7ff6e7ef0fe77210ff6b20', $pageCache[1]['tag']);
     }
 
-    /**
-     * @test
-     */
-    public function appliesMarkersFromConfiguredStoragePid(): void
+    public function testAppliesMarkersFromConfiguredStoragePid(): void
     {
         $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
 
