@@ -30,9 +30,7 @@ use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
 return static function (ECSConfig $ecsConfig): void {
-    $parameters = $ecsConfig->parameters();
-
-    $parameters->set(Option::SETS, [
+    $ecsConfig->sets([
         SetList::PSR_12,
         SetList::PHPUNIT,
     ]);
