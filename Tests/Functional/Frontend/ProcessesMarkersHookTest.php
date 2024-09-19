@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Frontend;
 
+use PHPUnit\Framework\Attributes\Test;
 use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\ImplementingInterface;
 
 /**
@@ -40,7 +41,8 @@ class ProcessesMarkersHookTest extends AbstractProcessesMarkersTest
         ],
     ];
 
-    public function testExecutesHookClass(): void
+    #[Test]
+    public function executesHookClass(): void
     {
         $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
 

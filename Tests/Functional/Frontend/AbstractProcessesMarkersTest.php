@@ -23,17 +23,32 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Frontend;
 
+use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class AbstractProcessesMarkersTest extends FunctionalTestCase
 {
+
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/variables',
     ];
 
     protected array $pathsToLinkInTestInstance = [
         'typo3conf/ext/variables/Tests/Functional/Fixtures/Frontend/Sites/' => 'typo3conf/sites',
+    ];
+
+    protected array $configurationToUseInTestInstance = [
+        'SYS' => [
+            'caching' => [
+                'cacheConfigurations' => [
+                    // Set pages cache database backend, testing-framework sets this to NullBackend by default.
+                    'pages' => [
+                        'backend' => Typo3DatabaseBackend::class,
+                    ],
+                ],
+            ],
+        ],
     ];
 
     protected function setUp(): void

@@ -19,7 +19,7 @@
   },
   "require-dev": {
     "rector/rector": "^0.12.23",
-    "typo3/testing-framework": "^6.0 || ^7.0",
+    "typo3/testing-framework": "^7.0",
     "phpspec/prophecy-phpunit": "^2.0",
     "symplify/easy-coding-standard": "^10.2"
   },
