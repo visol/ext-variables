@@ -23,6 +23,9 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Caching;
 
+use Generator;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Sinso\Variables\Hooks\DataHandler;
@@ -37,9 +40,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canBeCreated(): void
     {
         $subject = new DataHandler();
@@ -50,10 +51,8 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider possibleNoneTriggeringParams
-     */
+    #[Test]
+    #[DataProvider('possibleNoneTriggeringParams')]
     public function doesNotInteractWithCacheManagerOnUnkownData(array $params): void
     {
         $cacheManager = $this->prophesize(CacheManager::class);
@@ -68,7 +67,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
     /**
      * @return Generator<string,array{params:array}|array{params:array<string,string>}>
      */
-    public function possibleNoneTriggeringParams(): \Generator
+    public static function possibleNoneTriggeringParams(): Generator
     {
         yield 'no table given' => [
             'params' => [],
@@ -87,9 +86,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
         ];
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function flushCachesByGroupForMarker(): void
     {
         $cacheManager = $this->prophesize(CacheManager::class);
