@@ -28,11 +28,11 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 abstract class AbstractProcessesMarkersTest extends FunctionalTestCase
 {
-    protected array $testExtensionsToLoad = [
+    protected $testExtensionsToLoad = [
         'typo3conf/ext/variables',
     ];
 
-    protected array $pathsToLinkInTestInstance = [
+    protected $pathsToLinkInTestInstance = [
         'typo3conf/ext/variables/Tests/Functional/Fixtures/Frontend/Sites/' => 'typo3conf/sites',
     ];
 

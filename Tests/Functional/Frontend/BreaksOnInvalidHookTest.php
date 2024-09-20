@@ -30,7 +30,7 @@ use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInter
  */
 class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTest
 {
-    protected array $configurationToUseInTestInstance = [
+    protected $configurationToUseInTestInstance = [
         'EXTCONF' => [
             'variables' => [
                 'postProcessMarkers' => [
