@@ -26,7 +26,7 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
 use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInterface;
 
 /**
- * @covers \Sinso\Variables\Hooks\ContentProcessor
+ * @covers \Sinso\Variables\Service\VariablesService
  */
 class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTest
 {
