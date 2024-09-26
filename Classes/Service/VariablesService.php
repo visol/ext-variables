@@ -111,7 +111,7 @@ class VariablesService
                 }
 
                 // Assign a cache key associated with the marker
-                $this->cacheTags->add(CacheKeyUtility::getCacheKey($marker->key));
+                $this->cacheTags->add(CacheKeyUtility::getCacheKey($marker->getMarkerWithBrackets()));
                 $this->usedMarkerKeys[] = $marker->key;
                 $text = $newContent;
             }

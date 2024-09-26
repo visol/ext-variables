@@ -30,6 +30,6 @@ class ImplementingInterface implements MarkersProcessorInterface
 {
     public function postProcessMarkers(MarkerCollection $markers): void
     {
-        $markers['{{MARKER1}}']['replacement'] = 'Modified by hook';
+        $markers->get('{{MARKER1}}')->replacement = 'Modified by hook';
     }
 }

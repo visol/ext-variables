@@ -25,7 +25,7 @@ class MarkerCollection extends AbstractArray
 
     public function add(Marker $marker): void
     {
-        $this[$marker->key] = $marker;
+        $this[$marker->getMarkerWithBrackets()] = $marker;
     }
 
     /**
