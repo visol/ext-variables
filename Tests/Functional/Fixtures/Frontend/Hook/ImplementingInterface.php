@@ -23,12 +23,13 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook;
 
+use Sinso\Variables\Domain\Model\MarkerCollection;
 use Sinso\Variables\Hooks\MarkersProcessorInterface;
 
 class ImplementingInterface implements MarkersProcessorInterface
 {
-    public function postProcessMarkers(array &$markers)
+    public function postProcessMarkers(MarkerCollection $markers): void
     {
-        $markers['{{MARKER1}}']['replacement'] = 'Modified by hook';
+        $markers->get('{{MARKER1}}')->replacement = 'Modified by hook';
     }
 }

@@ -26,7 +26,7 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
 use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInterface;
 
 /**
- * @covers \Sinso\Variables\Hooks\ContentProcessor
+ * @covers \Sinso\Variables\Service\VariablesService
  */
 class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTest
 {
@@ -40,10 +40,7 @@ class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTest
         ],
     ];
 
-    /**
-     * @test
-     */
-    public function throwsExceptionIfConfiguredClassDoesntImplementInterface(): void
+    public function testThrowsExceptionIfConfiguredClassDoesntImplementInterface(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInterface does not implement Sinso\Variables\Hooks\MarkersProcessorInterface');

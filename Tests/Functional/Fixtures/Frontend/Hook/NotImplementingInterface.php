@@ -25,5 +25,4 @@ namespace Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook;
 
 class NotImplementingInterface
 {
-
 }

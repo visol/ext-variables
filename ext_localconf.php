@@ -1,4 +1,7 @@
 <?php
+
+use Sinso\Variables\Hooks\DataHandler;
+
 defined('TYPO3') || die();
 
 (static function ($extKey) {
@@ -6,5 +9,5 @@ defined('TYPO3') || die();
         = \Sinso\Variables\Hooks\ContentProcessor::class . '->replaceContent';
 
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][$extKey . '_clearcache']
-        = \Sinso\Variables\Hooks\DataHandler::class . '->clearCachePostProc';
+        = DataHandler::class . '->clearCachePostProc';
 })('variables');

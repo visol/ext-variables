@@ -30,9 +30,7 @@ use Symplify\EasyCodingStandard\ValueObject\Option;
 use Symplify\EasyCodingStandard\ValueObject\Set\SetList;
 
 return static function (ECSConfig $ecsConfig): void {
-    $parameters = $ecsConfig->parameters();
-
-    $parameters->set(Option::SETS, [
+    $ecsConfig->sets([
         SetList::PSR_12,
         SetList::PHPUNIT,
     ]);
@@ -51,51 +49,5 @@ return static function (ECSConfig $ecsConfig): void {
         PSR2ControlStructureSpacingSniff::class,
         FunctionsFunctionCallSignatureSniff::class . '.SpaceAfterCloseBracket',
         MethodsFunctionCallSignatureSniff::class . '.SpaceAfterCloseBracket',
-    ]);
-
-    $services = $ecsConfig->services();
-    $services->set(FullyQualifiedStrictTypesFixer::class);
-    $services->set(NoEmptyCommentFixer::class);
-    $services->set(MultilineCommentClosingFixer::class);
-    $services->set(PhpUnitTestAnnotationFixer::class)->call('configure', [
-        [
-            'style' => 'annotation',
-        ]
-    ]);
-    $services->set(NoUnusedImportsFixer::class);
-    $services->set(OrderedImportsFixer::class)->call('configure', [
-        [
-            'sort_algorithm' => 'alpha',
-        ]
-    ]);
-    $services->set(SingleQuoteFixer::class);
-    $services->set(ArraySyntaxFixer::class)->call('configure', [
-        [
-            'syntax' => 'short',
-        ]
-    ]);
-    $services->set(ArrayIndentSniff::class);
-    $services->set(TrimArraySpacesFixer::class);
-    $services->set(TrailingCommaInMultilineArrayFixer::class);
-    $services->set(NoExtraBlankLinesFixer::class);
-    $services->set(TernaryToNullCoalescingFixer::class);
-    $services->set(TernaryToElvisOperatorFixer::class);
-
-    $services->set(ConstantVisibilitySniff::class);
-
-    $services->set(UpperCaseConstantNameSniff::class);
-    $services->set(CamelCapsMethodNameSniff::class);
-
-    // Looks like this doesn't work, it does no longer report issues.
-    $services->set(SideEffectsSniff::class);
-
-    $services->set(PSR12ControlStructureSpacingSniff::class);
-    $services->set(OperatorSpacingSniff::class)
-        ->property('ignoreSpacingBeforeAssignments', false)
-        ->property('ignoreNewlines', true);
-    $services->set(OperatorLinebreakFixer::class)->call('configure', [
-        [
-            'position' => 'beginning',
-        ],
     ]);
 };

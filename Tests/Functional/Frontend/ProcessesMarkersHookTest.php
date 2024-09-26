@@ -40,10 +40,7 @@ class ProcessesMarkersHookTest extends AbstractProcessesMarkersTest
         ],
     ];
 
-    /**
-     * @test
-     */
-    public function executesHookClass(): void
+    public function testExecutesHookClass(): void
     {
         $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
 
