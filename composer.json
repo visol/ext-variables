@@ -14,7 +14,7 @@
     }
   },
   "require": {
-    "php": ">= 8.1 < 8.3",
+    "php": ">= 8.0 < 8.3",
     "ramsey/collection": "^2.0",
     "typo3/cms-core": "^11.5"
   },
