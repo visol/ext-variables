@@ -48,7 +48,7 @@ class VariablesService
         $this->typoScriptFrontendController = $typoScriptFrontendController;
         $this->markerCollection = $this->getMarkers();
         $this->markerKeys = $this->markerCollection->getMarkerKeys();
-        $this->markerRegexp = '/(' . implode('|', $this->markerKeys) . ')/'; // TODO Use preg_quote
+        $this->markerRegexp = '/(' . implode('|', array_map('preg_quote', $this->markerKeys)) . ')/';
     }
 
     /**
