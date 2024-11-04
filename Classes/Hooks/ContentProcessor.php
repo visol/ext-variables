@@ -21,19 +21,23 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 class ContentProcessor
 {
+    public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
+    {
+        $event->getController()->content = $this->getReplacedContent($event->getController(), $event->getController()->content);
+    }
 
-    /**
-     * Dynamically replaces variables by user content.
-     */
     public function replaceContent(array &$parameters, TypoScriptFrontendController $parentObject): void
     {
+        $parentObject->content = $this->getReplacedContent($parentObject, $parentObject->content);
+    }
+
+    protected function getReplacedContent(TypoScriptFrontendController $parentObject, array|string $content): string|array|null
+    {
         $extConfig = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-
-        $content = $parentObject->content;
-
         $markers = $this->getMarkers($parentObject);
         $markerKeys = array_keys($markers);
         $markerRegexp = '/(' . implode('|', $markerKeys) . ')/';
@@ -70,8 +74,7 @@ class ContentProcessor
         if ($extConfig->get('variables', 'removeUnreplacedMarkers')) {
             $content = preg_replace('/{{.*?}}/', '', $content);
         }
-
-        $parentObject->content = $content;
+        return $content;
     }
 
     protected function getSmallestLifetimeForMarkers(array $usedMarkerKeys): int
@@ -174,7 +177,7 @@ class ContentProcessor
             ];
         }
 
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'])) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'] ?? null)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['variables']['postProcessMarkers'] as $classRef) {
                 $hookObj = GeneralUtility::makeInstance($classRef);
                 if (!($hookObj instanceof MarkersProcessorInterface)) {
@@ -189,5 +192,4 @@ class ContentProcessor
 
         return $markers;
     }
-
 }

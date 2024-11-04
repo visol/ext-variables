@@ -6,3 +6,8 @@ services:
 
   Sinso\Variables\:
     resource: '../Classes/*'
+
+  Sinso\Variables\Hooks\ContentProcessor  :
+    tags:
+      - name: event.listener
+        identifier: 'my-package/content-modifier'
