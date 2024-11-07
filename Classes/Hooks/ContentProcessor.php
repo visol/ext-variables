@@ -18,6 +18,7 @@ use Sinso\Variables\Service\VariablesService;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 class ContentProcessor
 {
@@ -29,7 +30,17 @@ class ContentProcessor
     }
 
     /**
-     * Dynamically replaces variables by user content.
+     * for v12 from the Service.yaml
+     */
+    public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
+    {
+        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        $this->variablesService->initialize($extensionConfiguration, $event->getController());
+        $this->variablesService->replaceMarkersInStructureAndAdjustCaching($event->getController()->content);
+    }
+
+    /**
+     * for the v11
      */
     public function replaceContent(array &$parameters, TypoScriptFrontendController $parentObject): void
     {

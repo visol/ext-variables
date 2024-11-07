@@ -7,5 +7,13 @@ services:
   Sinso\Variables\:
     resource: '../Classes/*'
 
+  Sinso\Variables\Hooks\DataHandler:
+    public: true
+
+  Sinso\Variables\Hooks\ContentProcessor  :
+    tags:
+      - name: event.listener
+        identifier: 'variables/content-processor'
+
   Sinso\Variables\Service\VariablesService:
     public: true
