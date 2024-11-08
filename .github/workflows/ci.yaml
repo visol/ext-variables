@@ -106,10 +106,6 @@ jobs:
       matrix:
         include:
           - php-version: '8.1'
-            typo3-version: '^11.5'
-          - php-version: '8.2'
-            typo3-version: '^11.5'
-          - php-version: '8.1'
             typo3-version: '^12.4'
           - php-version: '8.2'
             typo3-version: '^12.4'
