@@ -11,7 +11,8 @@ final class ModifyCacheLifetime
 {
     public function __construct(
         protected VariablesService $variablesService,
-    ) {}
+    ) {
+    }
 
     /**
      * Calculate shortest lifetime (aka duration) respecting data from

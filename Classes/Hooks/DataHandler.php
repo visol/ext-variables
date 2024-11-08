@@ -25,7 +25,8 @@ class DataHandler
     public function __construct(
         private readonly ConnectionPool $connectionPool,
         private readonly CacheManager $cacheManager,
-    ) {}
+    ) {
+    }
 
     /**
      * Flushes the cache if a marker record was edited.
@@ -66,7 +67,7 @@ class DataHandler
 
         return new Marker(
             uid: $params['uid'],
-            key:  $marker,
+            key: $marker,
             replacement: '', // value doesn't matter here
         );
     }
