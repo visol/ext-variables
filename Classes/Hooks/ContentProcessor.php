@@ -17,7 +17,6 @@ namespace Sinso\Variables\Hooks;
 use Sinso\Variables\Service\VariablesService;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 class ContentProcessor
@@ -29,23 +28,10 @@ class ContentProcessor
         $this->variablesService = GeneralUtility::makeInstance(VariablesService::class);
     }
 
-    /**
-     * for v12 from the Service.yaml
-     */
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
         $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         $this->variablesService->initialize($extensionConfiguration, $event->getController());
         $this->variablesService->replaceMarkersInStructureAndAdjustCaching($event->getController()->content);
-    }
-
-    /**
-     * for the v11
-     */
-    public function replaceContent(array &$parameters, TypoScriptFrontendController $parentObject): void
-    {
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $this->variablesService->initialize($extensionConfiguration, $parentObject);
-        $this->variablesService->replaceMarkersInStructureAndAdjustCaching($parentObject->content);
     }
 }

@@ -66,7 +66,7 @@ class VariablesService
             throw new \Exception('Markers not initialized. Please run initialize() first.', 1726241619);
         }
         $this->replaceMarkersInStructure($structure);
-        $this->setCacheTagsAndLifetimeInTsfe();
+        $this->setCacheTagsInTsfe();
     }
 
     /**
@@ -111,11 +111,17 @@ class VariablesService
                 }
 
                 // Assign a cache key associated with the marker
-                $this->cacheTags->add(CacheKeyUtility::getCacheKey($marker->getMarkerWithBrackets()));
+                $this->cacheTags->add(
+                    CacheKeyUtility::getCacheKey(
+                        $marker->getMarkerWithBrackets()
+                    )
+                );
                 $this->usedMarkerKeys[] = $marker->key;
                 $text = $newContent;
             }
         }
+
+        $this->usedMarkerKeys = array_unique($this->usedMarkerKeys);
 
         // Remove all markers (avoids empty entries)
         if ($this->extensionConfiguration->get('variables', 'removeUnreplacedMarkers')) {
@@ -169,24 +175,30 @@ class VariablesService
         return $markers;
     }
 
-    protected function setCacheTagsAndLifetimeInTsfe(): void
+    protected function setCacheTagsInTsfe(): void
     {
-        $this->usedMarkerKeys = array_unique($this->usedMarkerKeys);
-
-        $minLifetime = min(
-            $this->getSmallestLifetimeForMarkers($this->usedMarkerKeys),
-            $this->typoScriptFrontendController->page['cache_timeout'] ?: PHP_INT_MAX
-        );
-
-        $this->typoScriptFrontendController->page['cache_timeout'] = $minLifetime;
-
         if (count($this->cacheTags) > 0) {
             $this->typoScriptFrontendController->addCacheTags($this->cacheTags->toArray());
         }
     }
 
-    public function getSmallestLifetimeForMarkers(array $usedMarkerKeys): int
+    public function getLifetime(): int
     {
+        return $this->getNearestTimestampForMarkers($this->usedMarkerKeys) - $GLOBALS['EXEC_TIME'];
+    }
+
+    /**
+     * Get the nearest timestamp in the future when changes for Markers should happen.
+     * This respects starttime and endtime.
+     * The result will be used to calculate the maximal caching duration
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getNearestTimestampForMarkers(array $usedMarkerKeys): int
+    {
+        // Max value possible to keep an int \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->realPageCacheContent ($timeOutTime = $GLOBALS['EXEC_TIME'] + $cacheTimeout;)
+        $result = PHP_INT_MAX;
+
         $tableName = 'tx_variables_marker';
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName)->createQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll()
@@ -195,10 +207,8 @@ class VariablesService
         // Code heavily inspired by:
         // \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->getFirstTimeValueForRecord
         $now = (int)$GLOBALS['ACCESS_TIME'];
-        // Max value possible to keep an int \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->realPageCacheContent ($timeOutTime = $GLOBALS['EXEC_TIME'] + $cacheTimeout;)
-        $result = PHP_INT_MAX - $GLOBALS['EXEC_TIME'];
         $timeFields = [];
-        $timeConditions = $queryBuilder->expr()->orX();
+        $timeConditions = $queryBuilder->expr()->or();
         foreach (['starttime', 'endtime'] as $field) {
             if (isset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns'][$field])) {
                 $timeFields[$field] = $GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns'][$field];
@@ -212,7 +222,7 @@ class VariablesService
                     . ' THEN NULL ELSE ' . $queryBuilder->quoteIdentifier($timeFields[$field]) . ' END'
                     . ') AS ' . $queryBuilder->quoteIdentifier($timeFields[$field])
                 );
-                $timeConditions->add(
+                $timeConditions->with(
                     $queryBuilder->expr()->gt(
                         $timeFields[$field],
                         $queryBuilder->createNamedParameter($now, \PDO::PARAM_INT)

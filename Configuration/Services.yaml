@@ -10,10 +10,13 @@ services:
   Sinso\Variables\Hooks\DataHandler:
     public: true
 
-  Sinso\Variables\Hooks\ContentProcessor  :
+  Sinso\Variables\Hooks\ContentProcessor:
     tags:
       - name: event.listener
-        identifier: 'variables/content-processor'
 
   Sinso\Variables\Service\VariablesService:
     public: true
+
+  Sinso\Variables\EventListener\ModifyCacheLifetime:
+    tags:
+      - name: event.listener
