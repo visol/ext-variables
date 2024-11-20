@@ -35,7 +35,7 @@ class DataHandler
     {
         $marker = $this->getMarkerFromHook($params, $dataHandler);
 
-        if (!$marker) {
+        if (!$marker instanceof \Sinso\Variables\Domain\Model\Marker) {
             return;
         }
 

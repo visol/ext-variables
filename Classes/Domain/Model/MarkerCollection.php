@@ -34,7 +34,7 @@ class MarkerCollection extends AbstractArray
     public function get(string $markerKey): Marker
     {
         if (!isset($this[$markerKey])) {
-            throw new \RuntimeException('Marker not found');
+            throw new \RuntimeException('Marker not found', 6494338102);
         }
 
         return $this[$markerKey];

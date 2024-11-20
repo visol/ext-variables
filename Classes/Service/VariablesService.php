@@ -36,11 +36,11 @@ class VariablesService
         ExtensionConfiguration $extensionConfiguration = null,
         TypoScriptFrontendController $typoScriptFrontendController = null,
     ): void {
-        if (!$typoScriptFrontendController) {
+        if (!$typoScriptFrontendController instanceof \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController) {
             $typoScriptFrontendController = $this->getTypoScriptFrontendController();
         }
 
-        if (!$extensionConfiguration) {
+        if (!$extensionConfiguration instanceof \TYPO3\CMS\Core\Configuration\ExtensionConfiguration) {
             $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         }
 
@@ -54,15 +54,13 @@ class VariablesService
     /**
      * Iterates over a structure (array, object) and replaces markers in every string found.
      *
-     * @param mixed $structure
      *
-     * @return void
      * @throws \Exception
      */
     public function replaceMarkersInStructureAndAdjustCaching(
         mixed &$structure
     ): void {
-        if ($this->markerCollection === null) {
+        if (!$this->markerCollection instanceof \Sinso\Variables\Domain\Model\MarkerCollection) {
             throw new \Exception('Markers not initialized. Please run initialize() first.', 1726241619);
         }
         $this->replaceMarkersInStructure($structure);
@@ -138,8 +136,8 @@ class VariablesService
             return $page['uid'];
         }, $this->typoScriptFrontendController->rootLine);
 
-        if (!empty($this->typoScriptFrontendController->tmpl->setup['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
-            $pids[] = (int)$this->typoScriptFrontendController->tmpl->setup['plugin.']['tx_variables.']['persistence.']['storagePid'];
+        if (!empty($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
+            $pids[] = (int)$GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'];
         }
 
         $table = 'tx_variables_marker';
@@ -184,7 +182,7 @@ class VariablesService
 
     public function getLifetime(): int
     {
-        return $this->getNearestTimestampForMarkers($this->usedMarkerKeys) - $GLOBALS['EXEC_TIME'];
+        return $this->getNearestTimestampForMarkers($this->usedMarkerKeys) - \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class)->getPropertyFromAspect('date', 'timestamp');
     }
 
     /**
@@ -206,7 +204,7 @@ class VariablesService
 
         // Code heavily inspired by:
         // \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->getFirstTimeValueForRecord
-        $now = (int)$GLOBALS['ACCESS_TIME'];
+        $now = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class)->getPropertyFromAspect('date', 'timestamp');
         $timeFields = [];
         $timeConditions = $queryBuilder->expr()->or();
         foreach (['starttime', 'endtime'] as $field) {
@@ -232,7 +230,7 @@ class VariablesService
         }
 
         // if starttime or endtime are defined, evaluate them
-        if (!empty($timeFields)) {
+        if ($timeFields !== []) {
             // find the timestamp, when the current page's content changes the next time
             $queryBuilder
                 ->from($tableName)
@@ -245,7 +243,7 @@ class VariablesService
                 ->fetch();
 
             if ($row) {
-                foreach ($timeFields as $timeField => $_) {
+                foreach (array_keys($timeFields) as $timeField) {
                     // if a MIN value is found, take it into account for the
                     // cache lifetime we have to filter out start/endtimes < $now,
                     // as the SQL query also returns rows with starttime < $now

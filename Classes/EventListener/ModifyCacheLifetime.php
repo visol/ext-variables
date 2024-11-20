@@ -10,7 +10,7 @@ use TYPO3\CMS\Frontend\Event\ModifyCacheLifetimeForPageEvent;
 final class ModifyCacheLifetime
 {
     public function __construct(
-        protected VariablesService $variablesService,
+        private VariablesService $variablesService,
     ) {
     }
 
