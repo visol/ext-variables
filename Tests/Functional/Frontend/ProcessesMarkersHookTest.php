@@ -30,7 +30,7 @@ use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\ImplementingInterfac
  */
 class ProcessesMarkersHookTest extends AbstractProcessesMarkersTest
 {
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'EXTCONF' => [
             'variables' => [
                 'postProcessMarkers' => [
