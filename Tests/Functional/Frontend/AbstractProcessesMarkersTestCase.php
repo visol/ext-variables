@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Frontend;
 
+use TYPO3\CMS\Core\Cache\Backend\Typo3DatabaseBackend;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -38,6 +40,18 @@ abstract class AbstractProcessesMarkersTestCase extends FunctionalTestCase
 
     protected function setUp(): void
     {
+        ArrayUtility::mergeRecursiveWithOverrule($this->configurationToUseInTestInstance, [
+            'SYS' => [
+                'caching' => [
+                    'cacheConfigurations' => [
+                        'pages' => [
+                            'backend' => Typo3DatabaseBackend::class,
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
         parent::setUp();
 
         $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Content.xml');
