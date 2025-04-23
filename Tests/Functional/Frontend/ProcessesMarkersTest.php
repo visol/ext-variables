@@ -26,7 +26,7 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
 /**
  * @covers \Sinso\Variables\Hooks\ContentProcessor
  */
-class ProcessesMarkersTest extends AbstractProcessesMarkersTest
+class ProcessesMarkersTest extends AbstractProcessesMarkersTestCase
 {
     public function testNoMarkerAppliedAsNoneExist(): void
     {

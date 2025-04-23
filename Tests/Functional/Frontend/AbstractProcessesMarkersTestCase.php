@@ -26,7 +26,7 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-abstract class AbstractProcessesMarkersTest extends FunctionalTestCase
+abstract class AbstractProcessesMarkersTestCase extends FunctionalTestCase
 {
     protected array $testExtensionsToLoad = [
         'typo3conf/ext/variables',
