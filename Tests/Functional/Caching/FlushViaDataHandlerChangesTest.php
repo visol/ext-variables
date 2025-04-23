@@ -64,7 +64,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
     /**
      * @return Generator<string,array{params:array}|array{params:array<string,string>}>
      */
-    public function possibleNoneTriggeringParams(): \Generator
+    public static function possibleNoneTriggeringParams(): \Generator
     {
         yield 'no table given' => [
             'params' => [],
