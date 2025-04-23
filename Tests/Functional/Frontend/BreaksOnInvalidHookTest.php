@@ -28,7 +28,7 @@ use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInter
 /**
  * @covers \Sinso\Variables\Service\VariablesService
  */
-class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTest
+class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTestCase
 {
     protected array $configurationToUseInTestInstance = [
         'EXTCONF' => [

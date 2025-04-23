@@ -27,6 +27,8 @@ use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Sinso\Variables\Hooks\DataHandler;
 use TYPO3\CMS\Core\Cache\CacheManager;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\DataHandling\DataHandler as Typo3DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -35,36 +37,26 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class FlushViaDataHandlerChangesTest extends FunctionalTestCase
 {
-    use ProphecyTrait;
-
-    public function testCanBeCreated(): void
-    {
-        $subject = new DataHandler();
-
-        self::assertInstanceOf(
-            DataHandler::class,
-            $subject
-        );
-    }
-
     /**
      * @dataProvider possibleNoneTriggeringParams
      */
     public function testDoesNotInteractWithCacheManagerOnUnkownData(array $params): void
     {
-        $cacheManager = $this->prophesize(CacheManager::class);
-        GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager->reveal());
+        $connectionPool = self::createMock(ConnectionPool::class);
+        $cacheManager = self::createMock(CacheManager::class);
+        $cacheManager
+            ->expects(self::never())
+            ->method('flushCachesInGroupByTag')
+        ;
 
-        $subject = new DataHandler();
-        $subject->clearCachePostProc($params);
-
-        $cacheManager->flushCachesInGroupByTag('pages', Argument::type('array'))->shouldNotBeCalled();
+        $subject = new DataHandler($connectionPool, $cacheManager);
+        $subject->clearCachePostProc($params, self::createStub(Typo3DataHandler::class));
     }
 
     /**
      * @return Generator<string,array{params:array}|array{params:array<string,string>}>
      */
-    public function possibleNoneTriggeringParams(): \Generator
+    public static function possibleNoneTriggeringParams(): \Generator
     {
         yield 'no table given' => [
             'params' => [],
@@ -85,16 +77,28 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
 
     public function testFlushCachesByGroupForMarker(): void
     {
-        $cacheManager = $this->prophesize(CacheManager::class);
-        GeneralUtility::setSingletonInstance(CacheManager::class, $cacheManager->reveal());
+        $connectionPool = self::createMock(ConnectionPool::class);
+        $cacheManager = self::createMock(CacheManager::class);
+        $cacheManager
+            ->expects(self::once())
+            ->method('flushCachesInGroupByTag')
+            ->with('pages', $this->stringStartsWith('tx_variables_key_hash_'))
+        ;
 
-        $subject = new DataHandler();
+        $dataHandler = self::createStub(Typo3DataHandler::class);
+        $dataHandler->datamap = [
+            'tx_variables_marker' => [
+                1 => [
+                    'marker' => 'TEST',
+                ],
+            ],
+        ];
+
+        $subject = new DataHandler($connectionPool, $cacheManager);
         $subject->clearCachePostProc([
             'table' => 'tx_variables_marker',
             'uid' => '1',
             'marker' => 'TEST'
-        ]);
-
-        $cacheManager->flushCachesInGroupByTag('pages', 'tx_variables_key_hash_033bd94b1168d7e4f0d644c3c95e35bf')->shouldBeCalledOnce();
+        ], $dataHandler);
     }
 }
