@@ -6,3 +6,7 @@ tt_content.template = TEXT
 tt_content.template.value = <p>{data.bodytext -> f:format.html()}</p>
 
 plugin.tx_variables.persistence.storagePid = 4
+
+lib.parseFunc_RTE {
+    htmlSanitize = 1
+}
