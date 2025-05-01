@@ -28,9 +28,9 @@ use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\ImplementingInterfac
 /**
  * @covers \Sinso\Variables\Hooks\ContentProcessor
  */
-class ProcessesMarkersHookTest extends AbstractProcessesMarkersTest
+class ProcessesMarkersHookTest extends AbstractProcessesMarkersTestCase
 {
-    protected $configurationToUseInTestInstance = [
+    protected array $configurationToUseInTestInstance = [
         'EXTCONF' => [
             'variables' => [
                 'postProcessMarkers' => [

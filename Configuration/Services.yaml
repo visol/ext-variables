@@ -7,5 +7,16 @@ services:
   Sinso\Variables\:
     resource: '../Classes/*'
 
+  Sinso\Variables\Hooks\DataHandler:
+    public: true
+
+  Sinso\Variables\Hooks\ContentProcessor:
+    tags:
+      - name: event.listener
+
   Sinso\Variables\Service\VariablesService:
     public: true
+
+  Sinso\Variables\EventListener\ModifyCacheLifetime:
+    tags:
+      - name: event.listener

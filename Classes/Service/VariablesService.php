@@ -36,11 +36,11 @@ class VariablesService
         ExtensionConfiguration $extensionConfiguration = null,
         TypoScriptFrontendController $typoScriptFrontendController = null,
     ): void {
-        if (!$typoScriptFrontendController) {
+        if (!$typoScriptFrontendController instanceof \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController) {
             $typoScriptFrontendController = $this->getTypoScriptFrontendController();
         }
 
-        if (!$extensionConfiguration) {
+        if (!$extensionConfiguration instanceof \TYPO3\CMS\Core\Configuration\ExtensionConfiguration) {
             $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         }
 
@@ -54,19 +54,17 @@ class VariablesService
     /**
      * Iterates over a structure (array, object) and replaces markers in every string found.
      *
-     * @param mixed $structure
      *
-     * @return void
      * @throws \Exception
      */
     public function replaceMarkersInStructureAndAdjustCaching(
         mixed &$structure
     ): void {
-        if ($this->markerCollection === null) {
+        if (!$this->markerCollection instanceof \Sinso\Variables\Domain\Model\MarkerCollection) {
             throw new \Exception('Markers not initialized. Please run initialize() first.', 1726241619);
         }
         $this->replaceMarkersInStructure($structure);
-        $this->setCacheTagsAndLifetimeInTsfe();
+        $this->setCacheTagsInTsfe();
     }
 
     /**
@@ -111,11 +109,17 @@ class VariablesService
                 }
 
                 // Assign a cache key associated with the marker
-                $this->cacheTags->add(CacheKeyUtility::getCacheKey($marker->getMarkerWithBrackets()));
+                $this->cacheTags->add(
+                    CacheKeyUtility::getCacheKey(
+                        $marker->getMarkerWithBrackets()
+                    )
+                );
                 $this->usedMarkerKeys[] = $marker->key;
                 $text = $newContent;
             }
         }
+
+        $this->usedMarkerKeys = array_unique($this->usedMarkerKeys);
 
         // Remove all markers (avoids empty entries)
         if ($this->extensionConfiguration->get('variables', 'removeUnreplacedMarkers')) {
@@ -132,8 +136,8 @@ class VariablesService
             return $page['uid'];
         }, $this->typoScriptFrontendController->rootLine);
 
-        if (!empty($this->typoScriptFrontendController->tmpl->setup['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
-            $pids[] = (int)$this->typoScriptFrontendController->tmpl->setup['plugin.']['tx_variables.']['persistence.']['storagePid'];
+        if (!empty($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
+            $pids[] = (int)$GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'];
         }
 
         $table = 'tx_variables_marker';
@@ -169,24 +173,30 @@ class VariablesService
         return $markers;
     }
 
-    protected function setCacheTagsAndLifetimeInTsfe(): void
+    protected function setCacheTagsInTsfe(): void
     {
-        $this->usedMarkerKeys = array_unique($this->usedMarkerKeys);
-
-        $minLifetime = min(
-            $this->getSmallestLifetimeForMarkers($this->usedMarkerKeys),
-            $this->typoScriptFrontendController->page['cache_timeout'] ?: PHP_INT_MAX
-        );
-
-        $this->typoScriptFrontendController->page['cache_timeout'] = $minLifetime;
-
         if (count($this->cacheTags) > 0) {
             $this->typoScriptFrontendController->addCacheTags($this->cacheTags->toArray());
         }
     }
 
-    public function getSmallestLifetimeForMarkers(array $usedMarkerKeys): int
+    public function getLifetime(): int
     {
+        return $this->getNearestTimestampForMarkers($this->usedMarkerKeys) - \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class)->getPropertyFromAspect('date', 'timestamp');
+    }
+
+    /**
+     * Get the nearest timestamp in the future when changes for Markers should happen.
+     * This respects starttime and endtime.
+     * The result will be used to calculate the maximal caching duration
+     *
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function getNearestTimestampForMarkers(array $usedMarkerKeys): int
+    {
+        // Max value possible to keep an int \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->realPageCacheContent ($timeOutTime = $GLOBALS['EXEC_TIME'] + $cacheTimeout;)
+        $result = PHP_INT_MAX;
+
         $tableName = 'tx_variables_marker';
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName)->createQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll()
@@ -194,11 +204,9 @@ class VariablesService
 
         // Code heavily inspired by:
         // \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->getFirstTimeValueForRecord
-        $now = (int)$GLOBALS['ACCESS_TIME'];
-        // Max value possible to keep an int \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->realPageCacheContent ($timeOutTime = $GLOBALS['EXEC_TIME'] + $cacheTimeout;)
-        $result = PHP_INT_MAX - $GLOBALS['EXEC_TIME'];
+        $now = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class)->getPropertyFromAspect('date', 'timestamp');
         $timeFields = [];
-        $timeConditions = $queryBuilder->expr()->orX();
+        $timeConditions = $queryBuilder->expr()->or();
         foreach (['starttime', 'endtime'] as $field) {
             if (isset($GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns'][$field])) {
                 $timeFields[$field] = $GLOBALS['TCA'][$tableName]['ctrl']['enablecolumns'][$field];
@@ -212,7 +220,7 @@ class VariablesService
                     . ' THEN NULL ELSE ' . $queryBuilder->quoteIdentifier($timeFields[$field]) . ' END'
                     . ') AS ' . $queryBuilder->quoteIdentifier($timeFields[$field])
                 );
-                $timeConditions->add(
+                $timeConditions->with(
                     $queryBuilder->expr()->gt(
                         $timeFields[$field],
                         $queryBuilder->createNamedParameter($now, \PDO::PARAM_INT)
@@ -222,7 +230,7 @@ class VariablesService
         }
 
         // if starttime or endtime are defined, evaluate them
-        if (!empty($timeFields)) {
+        if ($timeFields !== []) {
             // find the timestamp, when the current page's content changes the next time
             $queryBuilder
                 ->from($tableName)
@@ -235,7 +243,7 @@ class VariablesService
                 ->fetch();
 
             if ($row) {
-                foreach ($timeFields as $timeField => $_) {
+                foreach (array_keys($timeFields) as $timeField) {
                     // if a MIN value is found, take it into account for the
                     // cache lifetime we have to filter out start/endtimes < $now,
                     // as the SQL query also returns rows with starttime < $now

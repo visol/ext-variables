@@ -11,7 +11,6 @@ return [
         'label' => 'marker',
         'tstamp' => 'tstamp',
         'crdate' => 'crdate',
-        'cruser_id' => 'cruser_id',
         'dividers2tabs' => true,
         'versioningWS' => true,
         'origUid' => 't3_origuid',
@@ -27,9 +26,6 @@ return [
         ],
         'searchFields' => 'marker,replacement',
         'iconfile' => 'EXT:variables/Resources/Public/Icons/tx_variables_marker.png'
-    ],
-    'interface' => [
-        'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, marker, replacement',
     ],
     'types' => [
         '1' => [
@@ -58,25 +54,16 @@ return [
         'sys_language_uid' => [
             'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.language',
-            'config' => [
-                'type' => 'select',
-                'renderType' => 'selectSingle',
-                'special' => 'languages',
-                'items' => [
-                    ['LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.allLanguages', -1],
-                ],
-                'default' => 0,
-            ]
+            'config' => ['type' => 'language']
         ],
         'l10n_parent' => [
             'displayCond' => 'FIELD:sys_language_uid:>:0',
-            'exclude' => 1,
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.l18n_parent',
             'config' => [
                 'type' => 'select',
                 'renderType' => 'selectSingle',
                 'items' => [
-                    ['', 0],
+                    ['label' => '', 'value' => 0],
                 ],
                 'default' => 0,
                 'foreign_table' => 'tx_variables_marker',
@@ -108,10 +95,8 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:starttime_formlabel',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
                 'size' => 16,
-                'eval' => 'datetime,int',
                 'default' => 0,
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
@@ -123,10 +108,8 @@ return [
             'l10n_mode' => 'exclude',
             'label' => 'LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:endtime_formlabel',
             'config' => [
-                'type' => 'input',
-                'renderType' => 'inputDateTime',
+                'type' => 'datetime',
                 'size' => 16,
-                'eval' => 'datetime,int',
                 'default' => 0,
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
@@ -140,7 +123,8 @@ return [
             'config' => [
                 'type' => 'input',
                 'size' => 40,
-                'eval' => 'required,alphanum_x,upper' //TODO: Restore uniqueInPid. See https://forge.typo3.org/issues/83572
+                'eval' => 'alphanum_x,upper',
+                'required' => true //TODO: Restore uniqueInPid. See https://forge.typo3.org/issues/83572
             ],
         ],
         'replacement' => [
@@ -150,7 +134,8 @@ return [
                 'type' => 'text',
                 'cols' => 40,
                 'rows' => 4,
-                'eval' => 'required,trim'
+                'eval' => 'trim',
+                'required' => true
             ],
             'defaultExtras' => $enableRte ? 'richtext:rte_transform[mode=ts_css]' : '',
         ],
