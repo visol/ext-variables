@@ -23,6 +23,9 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Caching;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Sinso\Variables\Hooks\DataHandler;
@@ -32,15 +35,15 @@ use TYPO3\CMS\Core\DataHandling\DataHandler as Typo3DataHandler;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-/**
- * @covers \Sinso\Variables\Hooks\DataHandler
- */
+#[CoversClass(DataHandler::class)]
 class FlushViaDataHandlerChangesTest extends FunctionalTestCase
 {
     /**
-     * @dataProvider possibleNoneTriggeringParams
+     * @param array<mixed> $params
      */
-    public function testDoesNotInteractWithCacheManagerOnUnkownData(array $params): void
+    #[DataProvider('possibleNoneTriggeringParams')]
+    #[Test]
+    public function doesNotInteractWithCacheManagerOnUnkownData(array $params): void
     {
         $connectionPool = self::createMock(ConnectionPool::class);
         $cacheManager = self::createMock(CacheManager::class);
@@ -54,7 +57,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
     }
 
     /**
-     * @return Generator<string,array{params:array}|array{params:array<string,string>}>
+     * @return \Generator<string,array{params:array<mixed>}|array{params:array<string,string>}>
      */
     public static function possibleNoneTriggeringParams(): \Generator
     {
@@ -75,7 +78,8 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
         ];
     }
 
-    public function testFlushCachesByGroupForMarker(): void
+    #[Test]
+    public function flushCachesByGroupForMarker(): void
     {
         $connectionPool = self::createMock(ConnectionPool::class);
         $cacheManager = self::createMock(CacheManager::class);

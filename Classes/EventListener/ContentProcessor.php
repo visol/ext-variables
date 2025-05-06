@@ -13,26 +13,26 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-namespace Sinso\Variables\Hooks;
+namespace Sinso\Variables\EventListener;
 
 use Sinso\Variables\Service\VariablesService;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 class ContentProcessor
 {
-    protected VariablesService $variablesService;
-
-    public function __construct()
-    {
-        $this->variablesService = GeneralUtility::makeInstance(VariablesService::class);
+    public function __construct(
+        private readonly VariablesService $variablesService,
+    ) {
     }
 
+    #[AsEventListener()]
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $this->variablesService->initialize($extensionConfiguration, $event->getController());
-        $this->variablesService->replaceMarkersInStructureAndAdjustCaching($event->getController()->content);
+        $this->variablesService->replaceMarkersInStructureAndAdjustCaching(
+            $event->getRequest(),
+            $event->getController()->content
+        );
     }
 }
