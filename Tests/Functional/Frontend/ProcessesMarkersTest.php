@@ -23,62 +23,60 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Frontend;
 
-/**
- * @covers \Sinso\Variables\Hooks\ContentProcessor
- */
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+
+#[CoversClass(ContentProcessor::class)]
 class ProcessesMarkersTest extends AbstractProcessesMarkersTestCase
 {
-    public function testNoMarkerAppliedAsNoneExist(): void
+    #[Test]
+    public function noMarkerAppliedAsNoneExist(): void
     {
         self::assertStringContainsString(
             '<p>Some example text with marker {{MARKER1}}</p>',
             $this->fetchContentForPage(1)
         );
 
-        $pageCache = $this->getAllRecords('cache_pages_tags');
-        self::assertCount(1, $pageCache);
+        $this->assertHasNoCacheKeyStartingWithPrefix('tx_variables_key_hash');
     }
 
-    public function testAppliesMarkersStoredOnSamePage(): void
+    #[Test]
+    public function appliesMarkersStoredOnSamePage(): void
     {
-        $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Frontend/Marker.csv');
 
         self::assertStringContainsString(
             '<p>Some example text with marker Replaced marker 1 from pid 1</p>',
             $this->fetchContentForPage(1)
         );
 
-        $pageCache = $this->getAllRecords('cache_pages_tags');
-        self::assertCount(2, $pageCache);
-        self::assertSame('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639', $pageCache[0]['tag']);
+        $this->assertHasCacheForKey('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639');
     }
 
-    public function testAppliesMarkersFromRootlinePage(): void
+    #[Test]
+    public function appliesMarkersFromRootlinePage(): void
     {
-        $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Frontend/Marker.csv');
 
         self::assertStringContainsString(
             '<p>Some example text with marker Replaced marker 2 from pid 2 Replaced marker 1 from pid 1</p>',
             $this->fetchContentForPage(2)
         );
 
-        $pageCache = $this->getAllRecords('cache_pages_tags');
-        self::assertCount(3, $pageCache);
-        self::assertSame('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639', $pageCache[0]['tag']);
-        self::assertSame('tx_variables_key_hash_7324efb2ab7ff6e7ef0fe77210ff6b20', $pageCache[1]['tag']);
+        $this->assertHasCacheForKey('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639');
+        $this->assertHasCacheForKey('tx_variables_key_hash_7324efb2ab7ff6e7ef0fe77210ff6b20');
     }
 
-    public function testAppliesMarkersFromConfiguredStoragePid(): void
+    #[Test]
+    public function appliesMarkersFromConfiguredStoragePid(): void
     {
-        $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Frontend/Marker.csv');
 
         self::assertStringContainsString(
             '<p>Some example text with marker Replaced marker 3 from storage pid 4</p>',
             $this->fetchContentForPage(3)
         );
 
-        $pageCache = $this->getAllRecords('cache_pages_tags');
-        self::assertCount(2, $pageCache);
-        self::assertSame('tx_variables_key_hash_2328e4c0fcee8716480763f53e97ea82', $pageCache[0]['tag']);
+        $this->assertHasCacheForKey('tx_variables_key_hash_2328e4c0fcee8716480763f53e97ea82');
     }
 }

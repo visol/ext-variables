@@ -23,11 +23,11 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Frontend;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInterface;
 
-/**
- * @covers \Sinso\Variables\Service\VariablesService
- */
+#[CoversClass(VariablesService::class)]
 class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTestCase
 {
     protected array $configurationToUseInTestInstance = [
@@ -40,7 +40,8 @@ class BreaksOnInvalidHookTest extends AbstractProcessesMarkersTestCase
         ],
     ];
 
-    public function testThrowsExceptionIfConfiguredClassDoesntImplementInterface(): void
+    #[Test]
+    public function throwsExceptionIfConfiguredClassDoesntImplementInterface(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInterface does not implement Sinso\Variables\Hooks\MarkersProcessorInterface');

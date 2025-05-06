@@ -23,11 +23,12 @@ declare(strict_types=1);
 
 namespace Sinso\Variables\Tests\Functional\Frontend;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use Sinso\Variables\Hooks\ContentProcessor;
 use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\ImplementingInterface;
 
-/**
- * @covers \Sinso\Variables\Hooks\ContentProcessor
- */
+#[CoversClass(ContentProcessor::class)]
 class ProcessesMarkersHookTest extends AbstractProcessesMarkersTestCase
 {
     protected array $configurationToUseInTestInstance = [
@@ -40,17 +41,16 @@ class ProcessesMarkersHookTest extends AbstractProcessesMarkersTestCase
         ],
     ];
 
-    public function testExecutesHookClass(): void
+    #[Test]
+    public function executesHookClass(): void
     {
-        $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Marker.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Frontend/Marker.csv');
 
         self::assertStringContainsString(
             '<p>Some example text with marker Modified by hook</p>',
             $this->fetchContentForPage(1)
         );
 
-        $pageCache = $this->getAllRecords('cache_pages_tags');
-        self::assertCount(2, $pageCache);
-        self::assertSame('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639', $pageCache[0]['tag']);
+        $this->assertHasCacheForKey('tx_variables_key_hash_b3560bb929f682dcc19c903256f98639');
     }
 }

@@ -2,17 +2,21 @@
 
 namespace Sinso\Variables\Service;
 
+use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Collection\Set;
 use Sinso\Variables\Domain\Model\Marker;
 use Sinso\Variables\Domain\Model\MarkerCollection;
 use Sinso\Variables\Hooks\MarkersProcessorInterface;
 use Sinso\Variables\Utility\CacheKeyUtility;
+use TYPO3\CMS\Core\Cache\CacheDataCollector;
+use TYPO3\CMS\Core\Cache\CacheTag;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class VariablesService
 {
@@ -21,34 +25,16 @@ class VariablesService
     protected Set $cacheTags;
     protected array $usedMarkerKeys = [];
 
-    protected ?ExtensionConfiguration $extensionConfiguration = null;
-    protected ?TypoScriptFrontendController $typoScriptFrontendController = null;
     protected ?MarkerCollection $markerCollection = null;
     protected ?array $markerKeys = null;
     protected ?string $markerRegexp = null;
 
-    public function __construct()
-    {
+    public function __construct(
+        private readonly ExtensionConfiguration $extensionConfiguration,
+        private readonly Context $context,
+        private readonly ConnectionPool $connectionPool,
+    ) {
         $this->cacheTags = new Set('string');
-    }
-
-    public function initialize(
-        ExtensionConfiguration $extensionConfiguration = null,
-        TypoScriptFrontendController $typoScriptFrontendController = null,
-    ): void {
-        if (!$typoScriptFrontendController instanceof \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController) {
-            $typoScriptFrontendController = $this->getTypoScriptFrontendController();
-        }
-
-        if (!$extensionConfiguration instanceof \TYPO3\CMS\Core\Configuration\ExtensionConfiguration) {
-            $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        }
-
-        $this->extensionConfiguration = $extensionConfiguration;
-        $this->typoScriptFrontendController = $typoScriptFrontendController;
-        $this->markerCollection = $this->getMarkers();
-        $this->markerKeys = $this->markerCollection->getMarkerKeys();
-        $this->markerRegexp = '/(' . implode('|', array_map('preg_quote', $this->markerKeys)) . ')/';
     }
 
     /**
@@ -58,13 +44,15 @@ class VariablesService
      * @throws \Exception
      */
     public function replaceMarkersInStructureAndAdjustCaching(
+        ServerRequestInterface $request,
         mixed &$structure
     ): void {
-        if (!$this->markerCollection instanceof \Sinso\Variables\Domain\Model\MarkerCollection) {
-            throw new \Exception('Markers not initialized. Please run initialize() first.', 1726241619);
-        }
+        $this->markerCollection = $this->getMarkers($request);
+        $this->markerKeys = $this->markerCollection->getMarkerKeys();
+        $this->markerRegexp = '/(' . implode('|', array_map('preg_quote', $this->markerKeys)) . ')/';
+
         $this->replaceMarkersInStructure($structure);
-        $this->setCacheTagsInTsfe();
+        $this->setCacheTags($request);
     }
 
     /**
@@ -72,7 +60,7 @@ class VariablesService
      *
      * @throws \Exception
      */
-    protected function replaceMarkersInStructure(mixed &$structure): void
+    private function replaceMarkersInStructure(mixed &$structure): void
     {
         if (is_null($structure) || is_bool($structure) || is_int($structure) || is_float($structure) || $structure instanceof \UnitEnum) {
             return;
@@ -93,7 +81,7 @@ class VariablesService
         throw new \Exception(sprintf('Unsupported type "%s" in structure', gettype($structure)), 1725955598);
     }
 
-    protected function replaceMarkersInText(string &$text): void
+    private function replaceMarkersInText(string &$text): void
     {
         $loops = 0;
         while (preg_match($this->markerRegexp, $text) && $loops++ < self::MAXIMUM_LOOP_COUNT) {
@@ -130,18 +118,20 @@ class VariablesService
     /**
      * Returns the markers available in the current root line.
      */
-    protected function getMarkers(): MarkerCollection
-    {
+    private function getMarkers(
+        ServerRequestInterface $request,
+    ): MarkerCollection {
         $pids = array_map(static function ($page) {
             return $page['uid'];
-        }, $this->typoScriptFrontendController->rootLine);
+        }, $request->getAttribute('frontend.page.information')->getRootLine());
 
-        if (!empty($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
-            $pids[] = (int)$GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'];
+        if (!empty($request->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
+            $pids[] = (int)$request->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'];
         }
 
         $table = 'tx_variables_marker';
-        $rows = $this->typoScriptFrontendController->cObj->getRecords(
+        $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        $rows = $contentObjectRenderer->getRecords(
             $table,
             [
                 'selectFields' => 'marker, replacement',
@@ -173,38 +163,48 @@ class VariablesService
         return $markers;
     }
 
-    protected function setCacheTagsInTsfe(): void
-    {
-        if (count($this->cacheTags) > 0) {
-            $this->typoScriptFrontendController->addCacheTags($this->cacheTags->toArray());
+    private function setCacheTags(
+        ServerRequestInterface $request,
+    ): void {
+        if (count($this->cacheTags) === 0) {
+            return;
         }
+
+        $cacheCollector = $request->getAttribute('frontend.cache.collector');
+        if (($cacheCollector instanceof CacheDataCollector) === false) {
+            return;
+        }
+
+        $cacheTags = array_map(function (string $tag): CacheTag {
+            return new CacheTag($tag);
+        }, $this->cacheTags->toArray());
+
+        $cacheCollector->addCacheTags(...$cacheTags);
     }
 
     public function getLifetime(): int
     {
-        return $this->getNearestTimestampForMarkers($this->usedMarkerKeys) - \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class)->getPropertyFromAspect('date', 'timestamp');
+        return $this->getNearestTimestampForMarkers($this->usedMarkerKeys) - $this->context->getPropertyFromAspect('date', 'timestamp');
     }
 
     /**
      * Get the nearest timestamp in the future when changes for Markers should happen.
      * This respects starttime and endtime.
      * The result will be used to calculate the maximal caching duration
-     *
-     * @throws \Doctrine\DBAL\Exception
      */
-    public function getNearestTimestampForMarkers(array $usedMarkerKeys): int
+    private function getNearestTimestampForMarkers(array $usedMarkerKeys): int
     {
         // Max value possible to keep an int \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->realPageCacheContent ($timeOutTime = $GLOBALS['EXEC_TIME'] + $cacheTimeout;)
         $result = PHP_INT_MAX;
 
         $tableName = 'tx_variables_marker';
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($tableName)->createQueryBuilder();
+        $queryBuilder = $this->connectionPool->getConnectionForTable($tableName)->createQueryBuilder();
         $queryBuilder->getRestrictions()->removeAll()
             ->add(GeneralUtility::makeInstance(DeletedRestriction::class));
 
         // Code heavily inspired by:
         // \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->getFirstTimeValueForRecord
-        $now = (int)\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Context\Context::class)->getPropertyFromAspect('date', 'timestamp');
+        $now = (int)$this->context->getPropertyFromAspect('date', 'timestamp');
         $timeFields = [];
         $timeConditions = $queryBuilder->expr()->or();
         foreach (['starttime', 'endtime'] as $field) {
@@ -215,7 +215,7 @@ class VariablesService
                     . 'CASE WHEN '
                     . $queryBuilder->expr()->lte(
                         $timeFields[$field],
-                        $queryBuilder->createNamedParameter($now, \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter($now, Connection::PARAM_INT)
                     )
                     . ' THEN NULL ELSE ' . $queryBuilder->quoteIdentifier($timeFields[$field]) . ' END'
                     . ') AS ' . $queryBuilder->quoteIdentifier($timeFields[$field])
@@ -223,7 +223,7 @@ class VariablesService
                 $timeConditions->with(
                     $queryBuilder->expr()->gt(
                         $timeFields[$field],
-                        $queryBuilder->createNamedParameter($now, \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter($now, Connection::PARAM_INT)
                     )
                 );
             }
@@ -239,8 +239,8 @@ class VariablesService
                     $timeConditions
                 );
             $row = $queryBuilder
-                ->execute()
-                ->fetch();
+                ->executeQuery()
+                ->fetchAssociative();
 
             if ($row) {
                 foreach (array_keys($timeFields) as $timeField) {
@@ -257,10 +257,5 @@ class VariablesService
         }
 
         return $result;
-    }
-
-    public function getTypoScriptFrontendController(): TypoScriptFrontendController
-    {
-        return $GLOBALS['TSFE'];
     }
 }

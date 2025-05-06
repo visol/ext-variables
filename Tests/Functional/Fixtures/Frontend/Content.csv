@@ -1,0 +1,11 @@
+pages
+,uid,pid,title,slug,sorting,deleted
+,1,0,"Page 1",/page-1,128,0
+,2,1,"Page 2",/page-2,128,0
+,3,1,"Page 3",/page-3,128,0,
+,4,1,"Page 4 (Storage)",/page-4,128,0,
+tt_content
+,uid,pid,hidden,sorting,deleted,starttime,endtime,colPos,sys_language_uid,CType,header,bodytext
+,1,1,0,1,0,0,0,0,0,text,"Has Marker on Page 1","Some example text with marker {{MARKER1}}"
+,2,2,0,1,0,0,0,0,0,text,"Has Marker on Page 2","Some example text with marker {{MARKER2}} {{MARKER1}}"
+,3,3,0,1,0,0,0,0,0,text,"Has Marker on Page 3","Some example text with marker {{MARKER3}}"

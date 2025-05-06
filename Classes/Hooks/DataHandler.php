@@ -50,7 +50,7 @@ class DataHandler
     protected function getMarkerFromHook(array $params, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): ?Marker
     {
         if (
-            ($params['table'] !== 'tx_variables_marker')
+            (($params['table'] ?? '') !== 'tx_variables_marker')
             || !isset($params['uid'])
         ) {
             return null;
