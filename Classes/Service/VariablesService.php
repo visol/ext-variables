@@ -21,6 +21,8 @@ class VariablesService
     protected Set $cacheTags;
     protected array $usedMarkerKeys = [];
 
+    protected array $variablesStoragePids = [];
+
     protected ?ExtensionConfiguration $extensionConfiguration = null;
     protected ?TypoScriptFrontendController $typoScriptFrontendController = null;
     protected ?MarkerCollection $markerCollection = null;
@@ -35,6 +37,7 @@ class VariablesService
     public function initialize(
         ExtensionConfiguration $extensionConfiguration = null,
         TypoScriptFrontendController $typoScriptFrontendController = null,
+        $variablesStoragePids = [],
     ): void {
         if (!$typoScriptFrontendController instanceof \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController) {
             $typoScriptFrontendController = $this->getTypoScriptFrontendController();
@@ -42,6 +45,11 @@ class VariablesService
 
         if (!$extensionConfiguration instanceof \TYPO3\CMS\Core\Configuration\ExtensionConfiguration) {
             $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        }
+
+        // Define the location of the variable records (useful in APIs)
+        if (count($variablesStoragePids) > 0) {
+            $this->variablesStoragePids = $variablesStoragePids;
         }
 
         $this->extensionConfiguration = $extensionConfiguration;
@@ -136,9 +144,11 @@ class VariablesService
             return $page['uid'];
         }, $this->typoScriptFrontendController->rootLine);
 
-        if (!empty($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
+        if (!empty($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')?->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
             $pids[] = (int)$GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'];
         }
+
+        $pids = array_unique(array_merge($pids, $this->variablesStoragePids));
 
         $table = 'tx_variables_marker';
         $rows = $this->typoScriptFrontendController->cObj->getRecords(
