@@ -144,7 +144,7 @@ class VariablesService
             return $page['uid'];
         }, $this->typoScriptFrontendController->rootLine);
 
-        if (!empty($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
+        if (!empty($GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')?->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
             $pids[] = (int)$GLOBALS['TYPO3_REQUEST']->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'];
         }
 
