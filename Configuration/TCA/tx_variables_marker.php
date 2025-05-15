@@ -119,6 +119,7 @@ return [
         'marker' => [
             'exclude' => 0,
             'label' => 'LLL:EXT:variables/Resources/Private/Language/locallang_db.xlf:tx_variables_marker.marker',
+            'description' => 'LLL:EXT:variables/Resources/Private/Language/locallang_db.xlf:tx_variables_marker.marker.description',
             'l10n_mode' => 'exclude',
             'config' => [
                 'type' => 'input',
@@ -130,6 +131,7 @@ return [
         'replacement' => [
             'exclude' => 0,
             'label' => 'LLL:EXT:variables/Resources/Private/Language/locallang_db.xlf:tx_variables_marker.replacement',
+            'description' => 'LLL:EXT:variables/Resources/Private/Language/locallang_db.xlf:tx_variables_marker.replacement.description',
             'config' => [
                 'type' => 'text',
                 'cols' => 40,
