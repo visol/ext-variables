@@ -9,8 +9,14 @@
 			<trans-unit id="tx_variables_marker.marker">
 				<source>Marker:</source>
 			</trans-unit>
+			<trans-unit id="tx_variables_marker.marker.description">
+				<source>The marker you want to replace in your page. Will be automatically converted to upper case. Do not put the double curly brackets {{ ... }}.</source>
+			</trans-unit>
 			<trans-unit id="tx_variables_marker.replacement">
 				<source>Replacement Text:</source>
+			</trans-unit>
+			<trans-unit id="tx_variables_marker.replacement.description">
+				<source>The replacement text for the marker. You may reference other markers by enclosing them into double curly brackets {{ ... }}.</source>
 			</trans-unit>
 		</body>
 	</file>
