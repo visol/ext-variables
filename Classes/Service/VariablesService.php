@@ -215,7 +215,7 @@ class VariablesService
                     . 'CASE WHEN '
                     . $queryBuilder->expr()->lte(
                         $timeFields[$field],
-                        $queryBuilder->createNamedParameter($now, \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter($now, Connection::PARAM_INT)
                     )
                     . ' THEN NULL ELSE ' . $queryBuilder->quoteIdentifier($timeFields[$field]) . ' END'
                     . ') AS ' . $queryBuilder->quoteIdentifier($timeFields[$field])
@@ -223,7 +223,7 @@ class VariablesService
                 $timeConditions->with(
                     $queryBuilder->expr()->gt(
                         $timeFields[$field],
-                        $queryBuilder->createNamedParameter($now, \PDO::PARAM_INT)
+                        $queryBuilder->createNamedParameter($now, Connection::PARAM_INT)
                     )
                 );
             }
@@ -239,8 +239,8 @@ class VariablesService
                     $timeConditions
                 );
             $row = $queryBuilder
-                ->execute()
-                ->fetch();
+                ->executeQuery()
+                ->fetchAssociative();
 
             if ($row) {
                 foreach (array_keys($timeFields) as $timeField) {
