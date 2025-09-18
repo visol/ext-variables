@@ -25,10 +25,10 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Sinso\Variables\EventListener\ContentProcessor;
+use Sinso\Variables\Service\VariablesService;
 use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\ImplementingInterface;
 
-#[CoversClass(ContentProcessor::class)]
+#[CoversClass(VariablesService::class)]
 class ProcessesMarkersHookTest extends AbstractProcessesMarkersTestCase
 {
     protected array $configurationToUseInTestInstance = [
