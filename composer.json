@@ -21,7 +21,9 @@
   "require-dev": {
     "rector/rector": "^0.12.23",
     "typo3/testing-framework": "^8.0",
-    "symplify/easy-coding-standard": "^12.3"
+    "symplify/easy-coding-standard": "^12.3",
+    "phpstan/extension-installer": "^1.4",
+    "saschaegerer/phpstan-typo3": "^1.10"
   },
   "extra": {
     "typo3/cms": {
@@ -33,7 +35,8 @@
     "lock": false,
     "allow-plugins": {
       "typo3/cms-composer-installers": true,
-      "typo3/class-alias-loader": true
+      "typo3/class-alias-loader": true,
+      "phpstan/extension-installer": true
     }
   }
 }

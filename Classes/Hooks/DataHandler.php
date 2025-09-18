@@ -20,6 +20,7 @@ use Sinso\Variables\Utility\CacheKeyUtility;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\DataHandling\DataHandler as Typo3CoreDataHandler;
 
 class DataHandler
 {
@@ -31,8 +32,9 @@ class DataHandler
 
     /**
      * Flushes the cache if a marker record was edited.
+     * @param array<string, mixed> $params
      */
-    public function clearCachePostProc(array $params, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): void
+    public function clearCachePostProc(array $params, Typo3CoreDataHandler $dataHandler): void
     {
         $marker = $this->getMarkerFromHook($params, $dataHandler);
 
@@ -47,11 +49,15 @@ class DataHandler
         $this->cacheManager->flushCachesInGroupByTag('pages', $cacheTagToFlush);
     }
 
-    protected function getMarkerFromHook(array $params, \TYPO3\CMS\Core\DataHandling\DataHandler $dataHandler): ?Marker
+    /**
+     * @param array<string, mixed> $params
+     */
+    protected function getMarkerFromHook(array $params, Typo3CoreDataHandler $dataHandler): ?Marker
     {
         if (
             (($params['table'] ?? '') !== 'tx_variables_marker')
             || !isset($params['uid'])
+            || is_numeric($params['uid']) === false
         ) {
             return null;
         }
@@ -59,7 +65,7 @@ class DataHandler
         $marker = $dataHandler->datamap[$params['table']][$params['uid']]['marker'] ?? null;
 
         if (!$marker) {
-            $marker = $this->findVariableMarkerByUidEventIfHiddenOrDeleted($params['uid']);
+            $marker = $this->findVariableMarkerByUidEventIfHiddenOrDeleted((int) $params['uid']);
         }
 
         if (!$marker) {
@@ -67,7 +73,7 @@ class DataHandler
         }
 
         return new Marker(
-            uid: $params['uid'],
+            uid: (int) $params['uid'],
             key: $marker,
             replacement: '', // value doesn't matter here
         );
@@ -77,7 +83,7 @@ class DataHandler
     {
         $queryBuilder = $this->connectionPool->getQueryBuilderForTable('tx_variables_marker');
         $queryBuilder->getRestrictions()->removeAll();
-        return $queryBuilder
+        $result = $queryBuilder
             ->select('marker')
             ->from('tx_variables_marker')
             ->where(
@@ -85,5 +91,11 @@ class DataHandler
             )
             ->executeQuery()
             ->fetchOne();
+
+        if (is_string($result) || is_null($result)) {
+            return $result;
+        }
+
+        return null;
     }
 }

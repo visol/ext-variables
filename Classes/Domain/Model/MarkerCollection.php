@@ -17,6 +17,9 @@ namespace Sinso\Variables\Domain\Model;
 
 use Ramsey\Collection\AbstractArray;
 
+/**
+ * @extends AbstractArray<Marker>
+ */
 class MarkerCollection extends AbstractArray
 {
     public function getType(): string
@@ -41,6 +44,9 @@ class MarkerCollection extends AbstractArray
         return $this[$markerKey];
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getMarkerKeys(): array
     {
         return array_keys($this->data);

@@ -15,6 +15,8 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
+use TYPO3\CMS\Core\TypoScript\FrontendTypoScript;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -22,12 +24,14 @@ class VariablesService
 {
     public const MAXIMUM_LOOP_COUNT = 100;
 
+    /**
+     * @var Set<string>
+     */
     protected Set $cacheTags;
+    /**
+     * @var string[]
+     */
     protected array $usedMarkerKeys = [];
-
-    protected ?MarkerCollection $markerCollection = null;
-    protected ?array $markerKeys = null;
-    protected ?string $markerRegexp = null;
 
     public function __construct(
         private readonly ExtensionConfiguration $extensionConfiguration,
@@ -47,11 +51,7 @@ class VariablesService
         ServerRequestInterface $request,
         mixed &$structure
     ): void {
-        $this->markerCollection = $this->getMarkers($request);
-        $this->markerKeys = $this->markerCollection->getMarkerKeys();
-        $this->markerRegexp = '/(' . implode('|', array_map('preg_quote', $this->markerKeys)) . ')/';
-
-        $this->replaceMarkersInStructure($structure);
+        $this->replaceMarkersInStructure($this->getMarkers($request), $structure);
         $this->setCacheTags($request);
     }
 
@@ -60,20 +60,22 @@ class VariablesService
      *
      * @throws \Exception
      */
-    private function replaceMarkersInStructure(mixed &$structure): void
-    {
+    private function replaceMarkersInStructure(
+        MarkerCollection $markerCollection,
+        mixed &$structure
+    ): void {
         if (is_null($structure) || is_bool($structure) || is_int($structure) || is_float($structure) || $structure instanceof \UnitEnum) {
             return;
         }
 
         if (is_string($structure)) {
-            $this->replaceMarkersInText($structure);
+            $this->replaceMarkersInText($markerCollection, $structure);
             return;
         }
 
-        if (is_array($structure) || is_object($structure)) {
+        if (is_iterable($structure)) {
             foreach ($structure as &$subStructure) {
-                $this->replaceMarkersInStructure($subStructure);
+                $this->replaceMarkersInStructure($markerCollection, $subStructure);
             }
             return;
         }
@@ -81,11 +83,16 @@ class VariablesService
         throw new \Exception(sprintf('Unsupported type "%s" in structure', gettype($structure)), 1725955598);
     }
 
-    private function replaceMarkersInText(string &$text): void
-    {
+    private function replaceMarkersInText(
+        MarkerCollection $markerCollection,
+        string &$text
+    ): void {
+        $markerRegexp = '/(' . implode('|', array_map('preg_quote', $markerCollection->getMarkerKeys())) . ')/';
+
         $loops = 0;
-        while (preg_match($this->markerRegexp, $text) && $loops++ < self::MAXIMUM_LOOP_COUNT) {
-            foreach ($this->markerCollection as $marker) {
+
+        while (preg_match($markerRegexp, $text) && $loops++ < self::MAXIMUM_LOOP_COUNT) {
+            foreach ($markerCollection as $marker) {
                 $newContent = str_replace(
                     $marker->getMarkerWithBrackets(),
                     $marker->replacement,
@@ -123,10 +130,11 @@ class VariablesService
     ): MarkerCollection {
         $pids = array_map(static function ($page) {
             return $page['uid'];
-        }, $request->getAttribute('frontend.page.information')->getRootLine());
+        }, $request->getAttribute('frontend.page.information')?->getRootLine() ?? []);
 
-        if (!empty($request->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'])) {
-            $pids[] = (int)$request->getAttribute('frontend.typoscript')->getSetupArray()['plugin.']['tx_variables.']['persistence.']['storagePid'];
+        $storagePid = $this->getStoragePidFromTypoScript($request);
+        if (is_int($storagePid)) {
+            $pids[] = $storagePid;
         }
 
         $table = 'tx_variables_marker';
@@ -184,7 +192,7 @@ class VariablesService
 
     public function getLifetime(): int
     {
-        return $this->getNearestTimestampForMarkers($this->usedMarkerKeys) - $this->context->getPropertyFromAspect('date', 'timestamp');
+        return $this->getNearestTimestampForMarkers() - $this->context->getPropertyFromAspect('date', 'timestamp');
     }
 
     /**
@@ -192,7 +200,7 @@ class VariablesService
      * This respects starttime and endtime.
      * The result will be used to calculate the maximal caching duration
      */
-    private function getNearestTimestampForMarkers(array $usedMarkerKeys): int
+    private function getNearestTimestampForMarkers(): int
     {
         // Max value possible to keep an int \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController->realPageCacheContent ($timeOutTime = $GLOBALS['EXEC_TIME'] + $cacheTimeout;)
         $result = PHP_INT_MAX;
@@ -235,7 +243,7 @@ class VariablesService
             $queryBuilder
                 ->from($tableName)
                 ->where(
-                    $queryBuilder->expr()->in('marker', $queryBuilder->createNamedParameter($usedMarkerKeys, Connection::PARAM_STR_ARRAY)),
+                    $queryBuilder->expr()->in('marker', $queryBuilder->createNamedParameter($this->usedMarkerKeys, Connection::PARAM_STR_ARRAY)),
                     $timeConditions
                 );
             $row = $queryBuilder
@@ -257,5 +265,27 @@ class VariablesService
         }
 
         return $result;
+    }
+
+    private function getStoragePidFromTypoScript(ServerRequestInterface $request): ?int
+    {
+        $typoScript = $request->getAttribute('frontend.typoscript');
+        if (($typoScript instanceof FrontendTypoScript) === false) {
+            return null;
+        }
+
+        $typoScriptArray = $typoScript->getSetupArray();
+        $lookUpPath = 'plugin./tx_variables./persistence./storagePid';
+
+        if (ArrayUtility::isValidPath($typoScriptArray, $lookUpPath) === false) {
+            return null;
+        }
+
+        $storagePid = ArrayUtility::getValueByPath($typoScriptArray, $lookUpPath);
+        if (is_numeric($storagePid) === false) {
+            return null;
+        }
+
+        return (int)$storagePid;
     }
 }
