@@ -38,6 +38,17 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 #[CoversClass(DataHandler::class)]
 class FlushViaDataHandlerChangesTest extends FunctionalTestCase
 {
+    protected array $testExtensionsToLoad = [
+        'typo3conf/ext/variables',
+    ];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Frontend/Content.csv');
+    }
+
     /**
      * @param array<mixed> $params
      */
@@ -45,7 +56,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
     #[Test]
     public function doesNotInteractWithCacheManagerOnUnkownData(array $params): void
     {
-        $connectionPool = self::createMock(ConnectionPool::class);
+        $connectionPool = $this->get(ConnectionPool::class);
         $cacheManager = self::createMock(CacheManager::class);
         $cacheManager
             ->expects(self::never())
@@ -81,7 +92,7 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
     #[Test]
     public function flushCachesByGroupForMarker(): void
     {
-        $connectionPool = self::createMock(ConnectionPool::class);
+        $connectionPool = $this->get(ConnectionPool::class);
         $cacheManager = self::createMock(CacheManager::class);
         $cacheManager
             ->expects(self::once())
@@ -102,6 +113,85 @@ class FlushViaDataHandlerChangesTest extends FunctionalTestCase
         $subject->clearCachePostProc([
             'table' => 'tx_variables_marker',
             'uid' => '1',
+            'marker' => 'TEST'
+        ], $dataHandler);
+    }
+
+    #[Test]
+    public function flushCachesByGroupForHiddenMarker(): void
+    {
+        $connectionPool = $this->get(ConnectionPool::class);
+        $connectionPool->getConnectionForTable('tx_variables_marker')
+            ->insert('tx_variables_marker', [
+                'uid' => '100',
+                'hidden' => '1',
+                'marker' => 'hidden_marker',
+                'replacement' => 'replacement',
+            ]);
+
+        $cacheManager = self::createMock(CacheManager::class);
+        $cacheManager
+            ->expects(self::once())
+            ->method('flushCachesInGroupByTag')
+            ->with('pages', $this->stringStartsWith('tx_variables_key_hash_'))
+        ;
+
+        $dataHandler = self::createStub(Typo3DataHandler::class);
+
+        $subject = new DataHandler($connectionPool, $cacheManager);
+        $subject->clearCachePostProc([
+            'table' => 'tx_variables_marker',
+            'uid' => '100',
+            'marker' => 'TEST'
+        ], $dataHandler);
+    }
+
+    #[Test]
+    public function flushCachesByGroupForDeletedMarker(): void
+    {
+        $connectionPool = $this->get(ConnectionPool::class);
+        $connectionPool->getConnectionForTable('tx_variables_marker')
+            ->insert('tx_variables_marker', [
+                'uid' => '100',
+                'deleted' => '1',
+                'marker' => 'hidden_marker',
+                'replacement' => 'replacement',
+            ]);
+
+        $cacheManager = self::createMock(CacheManager::class);
+        $cacheManager
+            ->expects(self::once())
+            ->method('flushCachesInGroupByTag')
+            ->with('pages', $this->stringStartsWith('tx_variables_key_hash_'))
+        ;
+
+        $dataHandler = self::createStub(Typo3DataHandler::class);
+
+        $subject = new DataHandler($connectionPool, $cacheManager);
+        $subject->clearCachePostProc([
+            'table' => 'tx_variables_marker',
+            'uid' => '100',
+            'marker' => 'TEST'
+        ], $dataHandler);
+    }
+
+    #[Test]
+    public function doesNotFlushCachesByGroupForUnkownMarker(): void
+    {
+        $connectionPool = $this->get(ConnectionPool::class);
+
+        $cacheManager = self::createMock(CacheManager::class);
+        $cacheManager
+            ->expects(self::never())
+            ->method('flushCachesInGroupByTag')
+        ;
+
+        $dataHandler = self::createStub(Typo3DataHandler::class);
+
+        $subject = new DataHandler($connectionPool, $cacheManager);
+        $subject->clearCachePostProc([
+            'table' => 'tx_variables_marker',
+            'uid' => '100',
             'marker' => 'TEST'
         ], $dataHandler);
     }

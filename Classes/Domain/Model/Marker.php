@@ -21,7 +21,6 @@ class Marker
         public int $uid,
         public string $key,
         public string $replacement,
-        // public ?int $smallestValueFromTimeFields,
     ) {
     }
 
