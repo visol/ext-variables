@@ -25,7 +25,7 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
-use Sinso\Variables\Hooks\ContentProcessor;
+use Sinso\Variables\EventListener\ContentProcessor;
 use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\ImplementingInterface;
 
 #[CoversClass(ContentProcessor::class)]

@@ -126,3 +126,32 @@ jobs:
 
       - name: PHPUnit Tests
         run: ./vendor/bin/phpunit --testdox
+
+  phpstan:
+    runs-on: ubuntu-latest
+    needs:
+      - check-composer
+    strategy:
+      matrix:
+        include:
+          - php-version: '8.2'
+            typo3-version: '^13.4'
+          - php-version: '8.3'
+            typo3-version: '^13.4'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "${{ matrix.php-version }}"
+          coverage: none
+          tools: composer:v2
+        env:
+          COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install dependencies with expected TYPO3 version
+        run: composer require --no-progress --no-interaction --optimize-autoloader "typo3/cms-core:${{ matrix.typo3-version }}"
+
+      - name: PHPStan
+        run: ./vendor/bin/phpstan

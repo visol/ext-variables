@@ -25,6 +25,7 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Sinso\Variables\Service\VariablesService;
 use Sinso\Variables\Tests\Functional\Fixtures\Frontend\Hook\NotImplementingInterface;
 
 #[CoversClass(VariablesService::class)]

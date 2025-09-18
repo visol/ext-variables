@@ -25,6 +25,7 @@ namespace Sinso\Variables\Tests\Functional\Frontend;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use Sinso\Variables\EventListener\ContentProcessor;
 
 #[CoversClass(ContentProcessor::class)]
 class ProcessesMarkersTest extends AbstractProcessesMarkersTestCase

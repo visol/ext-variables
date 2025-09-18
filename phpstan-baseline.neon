@@ -1,0 +1,16 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Cannot cast mixed to int\\.$#"
+			count: 3
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(mixed\\)\\: mixed\\)\\|null, 'preg_quote' given\\.$#"
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: "#^Unable to resolve the template type T in call to method static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\GeneralUtility\\:\\:makeInstance\\(\\)$#"
+			count: 1
+			path: Classes/Service/VariablesService.php
