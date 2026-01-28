@@ -35,8 +35,8 @@ class VariablesService
     }
 
     public function initialize(
-        ExtensionConfiguration $extensionConfiguration = null,
-        TypoScriptFrontendController $typoScriptFrontendController = null,
+        ?ExtensionConfiguration $extensionConfiguration = null,
+        ?TypoScriptFrontendController $typoScriptFrontendController = null,
         $variablesStoragePids = [],
     ): void {
         if (!$typoScriptFrontendController instanceof \TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController) {
