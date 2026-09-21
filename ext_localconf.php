@@ -1,6 +1,5 @@
 <?php
 
-use Sinso\Variables\Hooks\ContentProcessor;
 use Sinso\Variables\Hooks\DataHandler;
 
 defined('TYPO3') || die();
