@@ -27,19 +27,9 @@ use DateTimeImmutable;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Sinso\Variables\EventListener\ModifyCacheLifetime;
-use Sinso\Variables\Hooks\DataHandler;
 use Sinso\Variables\Service\VariablesService;
 use Sinso\Variables\Tests\Functional\Frontend\AbstractProcessesMarkersTestCase;
-use TYPO3\CMS\Core\Cache\CacheManager;
-use TYPO3\CMS\Core\Context\Context;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\DataHandling\DataHandler as Typo3DataHandler;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Frontend\Cache\CacheLifetimeCalculator;
-use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 #[CoversClass(ModifyCacheLifetime::class)]
 #[CoversClass(VariablesService::class)]
