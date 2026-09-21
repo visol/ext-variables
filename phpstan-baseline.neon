@@ -1,16 +1,169 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Cannot cast mixed to int\\.$#"
+			message: '#^Property TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController\:\:\$content \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Classes/EventListener/ContentProcessor.php
+
+		-
+			message: '#^Parameter \$key of class Sinso\\Variables\\Domain\\Model\\Marker constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Hooks/DataHandler.php
+
+		-
+			message: '#^Possibly invalid array key type float\|int\|string\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: Classes/Hooks/DataHandler.php
+
+		-
+			message: '#^Binary operation "\-" between int and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Binary operation "\." between mixed and '' does not implement '' results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''EXTCONF'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''ctrl'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''enablecolumns'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''endtime''\|''starttime'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''marker'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''postProcessMarkers'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''replacement'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''tx_variables_marker'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''uid'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot access offset ''variables'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
 			count: 3
 			path: Classes/Service/VariablesService.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(mixed\\)\\: mixed\\)\\|null, 'preg_quote' given\\.$#"
+			message: '#^Parameter \#1 \$className of static method TYPO3\\CMS\\Core\\Utility\\GeneralUtility\:\:makeInstance\(\) expects class\-string\<object\>, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: Classes/Service/VariablesService.php
 
 		-
-			message: "#^Unable to resolve the template type T in call to method static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\GeneralUtility\\:\\:makeInstance\\(\\)$#"
+			message: '#^Parameter \#1 \$fieldName of method TYPO3\\CMS\\Core\\Database\\Query\\Expression\\ExpressionBuilder\:\:gt\(\) expects string, mixed given\.$#'
+			identifier: argument.type
 			count: 1
 			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Parameter \#1 \$fieldName of method TYPO3\\CMS\\Core\\Database\\Query\\Expression\\ExpressionBuilder\:\:lte\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Parameter \#1 \$identifier of method TYPO3\\CMS\\Core\\Database\\Query\\QueryBuilder\:\:quoteIdentifier\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Parameter \#2 \$array of function implode expects array\<string\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Parameter \$key of class Sinso\\Variables\\Domain\\Model\\Marker constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Parameter \$replacement of class Sinso\\Variables\\Domain\\Model\\Marker constructor expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Parameter \$uid of class Sinso\\Variables\\Domain\\Model\\Marker constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Parameter &\$text by\-ref type of method Sinso\\Variables\\Service\\VariablesService\:\:replaceMarkersInText\(\) expects string, string\|null given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Unable to resolve the template type T in call to static method TYPO3\\CMS\\Core\\Utility\\GeneralUtility\:\:makeInstance\(\)$#'
+			identifier: argument.templateType
+			count: 1
+			path: Classes/Service/VariablesService.php
+
+		-
+			message: '#^Parameter \#1 \$params of method Sinso\\Variables\\Hooks\\DataHandler\:\:clearCachePostProc\(\) expects array\<string, mixed\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Tests/Functional/Caching/FlushViaDataHandlerChangesTest.php
+
+		-
+			message: '#^Property TYPO3\\TestingFramework\\Core\\Functional\\FunctionalTestCase\:\:\$configurationToUseInTestInstance \(array\<string, mixed\>\) does not accept array\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Tests/Functional/Frontend/AbstractProcessesMarkersTestCase.php

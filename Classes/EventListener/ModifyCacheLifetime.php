@@ -8,10 +8,10 @@ use Sinso\Variables\Service\VariablesService;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Frontend\Event\ModifyCacheLifetimeForPageEvent;
 
-final class ModifyCacheLifetime
+final readonly class ModifyCacheLifetime
 {
     public function __construct(
-        private readonly VariablesService $variablesService,
+        private VariablesService $variablesService,
     ) {
     }
 

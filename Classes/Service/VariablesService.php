@@ -87,7 +87,7 @@ class VariablesService
         MarkerCollection $markerCollection,
         string &$text
     ): void {
-        $markerRegexp = '/(' . implode('|', array_map('preg_quote', $markerCollection->getMarkerKeys())) . ')/';
+        $markerRegexp = '/(' . implode('|', array_map(preg_quote(...), $markerCollection->getMarkerKeys())) . ')/';
 
         $loops = 0;
 
@@ -128,9 +128,7 @@ class VariablesService
     private function getMarkers(
         ServerRequestInterface $request,
     ): MarkerCollection {
-        $pids = array_map(static function ($page) {
-            return $page['uid'];
-        }, $request->getAttribute('frontend.page.information')?->getRootLine() ?? []);
+        $pids = array_map(static fn ($page) => $page['uid'], $request->getAttribute('frontend.page.information')?->getRootLine() ?? []);
 
         $storagePid = $this->getStoragePidFromTypoScript($request);
         if (is_int($storagePid)) {
@@ -183,10 +181,7 @@ class VariablesService
             return;
         }
 
-        $cacheTags = array_map(function (string $tag): CacheTag {
-            return new CacheTag($tag);
-        }, $this->cacheTags->toArray());
-
+        $cacheTags = array_map(fn (string $tag): CacheTag => new CacheTag($tag), $this->cacheTags->toArray());
         $cacheCollector->addCacheTags(...$cacheTags);
     }
 

@@ -17,7 +17,6 @@ namespace Sinso\Variables\EventListener;
 
 use Sinso\Variables\Service\VariablesService;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 class ContentProcessor

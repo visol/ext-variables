@@ -38,7 +38,7 @@ final class MarkerCollectionTest extends TestCase
     {
         $subject = new MarkerCollection();
 
-        self::assertSame('Sinso\Variables\Domain\Model\Marker', $subject->getType());
+        self::assertSame(\Sinso\Variables\Domain\Model\Marker::class, $subject->getType());
     }
 
     #[Test]
