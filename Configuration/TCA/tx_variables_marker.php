@@ -24,7 +24,6 @@ return [
             'starttime' => 'starttime',
             'endtime' => 'endtime',
         ],
-        'searchFields' => 'marker,replacement',
         'iconfile' => 'EXT:variables/Resources/Public/Icons/tx_variables_marker.png'
     ],
     'types' => [

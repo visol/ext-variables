@@ -1,0 +1,5 @@
+tx_variables_marker
+,uid,pid,marker,replacement
+,1,1,MARKER1,"Replaced marker 1 from pid 1"
+,2,2,MARKER2,"Replaced marker 2 from pid 2"
+,3,4,MARKER3,"Replaced marker 3 from storage pid 4"

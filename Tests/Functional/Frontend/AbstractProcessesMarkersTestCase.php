@@ -54,7 +54,7 @@ abstract class AbstractProcessesMarkersTestCase extends FunctionalTestCase
 
         parent::setUp();
 
-        $this->importDataSet('EXT:variables/Tests/Functional/Fixtures/Frontend/Content.xml');
+        $this->importCSVDataSet(__DIR__ . '/../Fixtures/Frontend/Content.csv');
         $this->setUpFrontendRootPage(1, [
             'EXT:variables/Tests/Functional/Fixtures/Frontend/Rendering.typoscript',
         ]);
@@ -65,6 +65,28 @@ abstract class AbstractProcessesMarkersTestCase extends FunctionalTestCase
         $request = new InternalRequest();
         $request = $request->withPageId($pageUid);
 
-        return $this->executeFrontendRequest($request)->getBody()->__toString();
+        return $this->executeFrontendSubRequest($request)->getBody()->__toString();
+    }
+
+    protected function assertHasCacheForKey(string $cacheKey): void
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('cache_pages_tags');
+        $queryBuilder->count('*');
+        $queryBuilder->from('cache_pages_tags');
+        $queryBuilder->where($queryBuilder->expr()->eq('tag', $queryBuilder->createNamedParameter($cacheKey)));
+
+        $count = $queryBuilder->executeQuery()->fetchOne();
+        self::assertSame(1, $count, 'Did not find a single cache entry for key: ' . $cacheKey);
+    }
+
+    protected function assertHasNoCacheKeyStartingWithPrefix(string $cacheKeyPrefix): void
+    {
+        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('cache_pages_tags');
+        $queryBuilder->count('*');
+        $queryBuilder->from('cache_pages_tags');
+        $queryBuilder->where($queryBuilder->expr()->like('tag', $queryBuilder->createNamedParameter($queryBuilder->escapeLikeWildcards($cacheKeyPrefix))));
+
+        $count = $queryBuilder->executeQuery()->fetchOne();
+        self::assertSame(0, $count, 'Did find a cache entries for key prefix: ' . $cacheKeyPrefix);
     }
 }

@@ -1,0 +1,12 @@
+includes:
+  - phpstan-baseline.neon
+parameters:
+    level: max
+    paths:
+        - Classes
+        - Tests
+    reportUnmatchedIgnoredErrors: false
+    typo3:
+        requestGetAttributeMapping:
+            'frontend.page.information': 'TYPO3\CMS\Frontend\Page\PageInformation|null'
+            'frontend.cache.collector': 'TYPO3\CMS\Core\Cache\CacheDataCollector|null'

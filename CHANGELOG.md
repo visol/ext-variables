@@ -1,3 +1,7 @@
+## 5.0.0 (2025-09-18)
+
+[!!!][TASK] TYPO3 13 compatibility
+
 ## 3.0.0 (2022-06-16)
 
 [TASK] php annotation
