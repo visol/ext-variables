@@ -87,30 +87,31 @@ class VariablesService
         MarkerCollection $markerCollection,
         string &$text
     ): void {
-        $markerRegexp = '/(' . implode('|', array_map(preg_quote(...), $markerCollection->getMarkerKeys())) . ')/';
+        if ($markerCollection->isEmpty() === false) {
+            $markerRegexp = $this->buildMarkerRegExp($markerCollection);
+            $loops = 0;
 
-        $loops = 0;
+            while (preg_match($markerRegexp, $text) && $loops++ < self::MAXIMUM_LOOP_COUNT) {
+                foreach ($markerCollection as $marker) {
+                    $newContent = str_replace(
+                        $marker->getMarkerWithBrackets(),
+                        $marker->replacement,
+                        $text
+                    );
 
-        while (preg_match($markerRegexp, $text) && $loops++ < self::MAXIMUM_LOOP_COUNT) {
-            foreach ($markerCollection as $marker) {
-                $newContent = str_replace(
-                    $marker->getMarkerWithBrackets(),
-                    $marker->replacement,
-                    $text
-                );
+                    if ($newContent === $text) {
+                        continue;
+                    }
 
-                if ($newContent === $text) {
-                    continue;
+                    // Assign a cache key associated with the marker
+                    $this->cacheTags->add(
+                        CacheKeyUtility::getCacheKey(
+                            $marker->getMarkerWithBrackets()
+                        )
+                    );
+                    $this->usedMarkerKeys[] = $marker->key;
+                    $text = $newContent;
                 }
-
-                // Assign a cache key associated with the marker
-                $this->cacheTags->add(
-                    CacheKeyUtility::getCacheKey(
-                        $marker->getMarkerWithBrackets()
-                    )
-                );
-                $this->usedMarkerKeys[] = $marker->key;
-                $text = $newContent;
             }
         }
 
@@ -167,6 +168,16 @@ class VariablesService
             }
         }
         return $markers;
+    }
+
+    private function buildMarkerRegExp(MarkerCollection $markerCollection): string
+    {
+        $quotedMarkerKeys = [];
+        foreach ($markerCollection->getMarkerKeys() as $markerKey) {
+            $quotedMarkerKeys[] = preg_quote($markerKey, '/');
+        }
+
+        return '/(' . implode('|', $quotedMarkerKeys) . ')/';
     }
 
     private function setCacheTags(
