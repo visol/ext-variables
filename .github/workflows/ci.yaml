@@ -71,11 +71,16 @@ jobs:
       - name: PHPUnit configuration file
         run: xmllint --schema vendor/phpunit/phpunit/phpunit.xsd --noout phpunit.xml.dist
 
-      - name: Fetch schema for xliff
-        run: wget https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd --output-document=.Build/xliff-core-1.2-strict.xsd
-
       - name: TYPO3 language files
-        run: xmllint --schema .Build/xliff-core-1.2-strict.xsd --noout $(find Resources -name '*.xlf')
+        env:
+          XML_CATALOG_FILES: .Build/catalog.xml
+        run: |
+          mkdir -p .Build
+          wget https://docs.oasis-open.org/xliff/v1.2/os/xliff-core-1.2-strict.xsd --output-document=.Build/xliff-core-1.2-strict.xsd
+          wget https://www.w3.org/2001/xml.xsd --output-document=.Build/xml.xsd
+          xmlcatalog --noout --create .Build/catalog.xml
+          xmlcatalog --noout --add system http://www.w3.org/2001/xml.xsd xml.xsd .Build/catalog.xml
+          XML_CATALOG_FILES=.Build/catalog.xml xmllint --nonet --schema .Build/xliff-core-1.2-strict.xsd --noout $(find Resources -name '*.xlf')
 
   coding-guideline:
     runs-on: ubuntu-latest
