@@ -1,3 +1,5 @@
+config.cache_period = 86400
+
 page = PAGE
 page.10 = < styles.content.get
 

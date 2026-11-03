@@ -138,6 +138,7 @@ class VariablesService
 
         $table = 'tx_variables_marker';
         $contentObjectRenderer = GeneralUtility::makeInstance(ContentObjectRenderer::class);
+        $contentObjectRenderer->setRequest($request);
         $rows = $contentObjectRenderer->getRecords(
             $table,
             [

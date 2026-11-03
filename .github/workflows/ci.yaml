@@ -118,6 +118,12 @@ jobs:
             typo3-version: '^13.4'
           - php-version: '8.5'
             typo3-version: '^13.4'
+          - php-version: '8.3'
+            typo3-version: '^14.0'
+          - php-version: '8.4'
+            typo3-version: '^14.0'
+          - php-version: '8.5'
+            typo3-version: '^14.0'
     steps:
       - uses: actions/checkout@v3
 
@@ -134,7 +140,7 @@ jobs:
         run: composer require --no-progress --no-interaction --optimize-autoloader "typo3/cms-core:${{ matrix.typo3-version }}"
 
       - name: PHPUnit Tests
-        run: ./vendor/bin/phpunit --testdox
+        run: php -d memory_limit=512M ./vendor/bin/phpunit --testdox
 
   phpstan:
     runs-on: ubuntu-latest
@@ -151,6 +157,12 @@ jobs:
             typo3-version: '^13.4'
           - php-version: '8.5'
             typo3-version: '^13.4'
+          - php-version: '8.3'
+            typo3-version: '^14.0'
+          - php-version: '8.4'
+            typo3-version: '^14.0'
+          - php-version: '8.5'
+            typo3-version: '^14.0'
     steps:
       - uses: actions/checkout@v3
 

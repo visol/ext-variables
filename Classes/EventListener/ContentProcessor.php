@@ -17,6 +17,7 @@ namespace Sinso\Variables\EventListener;
 
 use Sinso\Variables\Service\VariablesService;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
+use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
 
 class ContentProcessor
@@ -29,9 +30,25 @@ class ContentProcessor
     #[AsEventListener()]
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
+        // This listener supports v13 and v14.
+        // Remove once TYPO3 v13 support gets dropped
+        $version = new Typo3Version();
+        $useExplicitContent = $version->getMajorVersion() >= 14;
+
+        // PHPStan sees only the installed Core version; these APIs differ between v13 and v14.
+        if ($useExplicitContent) {
+            $content = $event->getContent(); // @phpstan-ignore-line
+        } else {
+            $content = &$event->getController()->content; // @phpstan-ignore-line
+        }
+
         $this->variablesService->replaceMarkersInStructureAndAdjustCaching(
             $event->getRequest(),
-            $event->getController()->content
+            $content,
         );
+
+        if ($useExplicitContent) {
+            $event->setContent($content); // @phpstan-ignore-line
+        }
     }
 }
