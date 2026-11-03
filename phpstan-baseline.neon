@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Property TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController\:\:\$content \(string\) does not accept mixed\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: Classes/EventListener/ContentProcessor.php
-
-		-
 			message: '#^Parameter \$key of class Sinso\\Variables\\Domain\\Model\\Marker constructor expects string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
